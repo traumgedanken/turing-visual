@@ -16,9 +16,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_openFileBtn_clicked();
-
     void on_codeEdit_textChanged();
+
+    void on_actionOpen_triggered();
+
+    void on_actionLight_triggered();
 
 private:
     Ui::MainWindow *ui;

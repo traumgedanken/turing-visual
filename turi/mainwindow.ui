@@ -6,34 +6,31 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
+    <width>785</width>
     <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Turi IDE</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="openFileBtn">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>30</y>
-      <width>95</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Open file</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="codeEdit">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>70</y>
+      <x>10</x>
+      <y>10</y>
       <width>351</width>
       <height>301</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="errorsList">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>331</width>
+      <height>281</height>
      </rect>
     </property>
    </widget>
@@ -52,11 +49,60 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>435</width>
+     <width>785</width>
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLight">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Light</string>
+   </property>
+  </action>
+  <action name="actionDark">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dark</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

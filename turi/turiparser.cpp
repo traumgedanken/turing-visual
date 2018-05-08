@@ -1,5 +1,6 @@
 #include "turiparser.h"
 #include <iostream>
+#include <exceptionmessage.h>
 
 TuriParser::TuriParser(QString & _code) {
     code = _code;
@@ -26,9 +27,10 @@ TuriProgram * TuriParser::parseTuriProgram() {
         if (!isValidState(line[0])) {
             errors.push_back(new TuriParserError(lineIndex + 1, "Invalid current state"));
         }
-        if (!isValidSymbols(line[1]) ) {
-            errors.push_back(new TuriParserError(lineIndex + 1, "Error at symbol block"));
-            continue;
+        try {
+            validateSymbols(line[1]);
+        } catch(ExceptionMessage & exception) {
+            errors.push_back(new TuriParserError(lineIndex + 1, exception.getErrorMessage()));
         }
         if (!isValidDirection(line[2]) ) {
             errors.push_back(new TuriParserError(lineIndex + 1, "Invalid direction"));
@@ -83,24 +85,62 @@ bool TuriParser::isValidSymbol(const QChar symbol) {
             symbol == " ";
 }
 
-bool TuriParser::isValidSymbols(QString & symbols) {
-    if (symbols == "->") return true;
-    if (symbols.length() > 4 || symbols.length() < 2) {
-        return false;
+void TuriParser::validateSymbols(QString & symbols) {
+    if (symbols == "->") return;
+    int index = symbols.indexOf('-');
+    if (symbols.length() < 2 ||
+            index == -1 ||
+            symbols.at(index + 1) != '>') {
+        throw ExceptionMessage("'->' is missing");
+        return;
+    }
+    if (symbols.length() > 4) {
+        if (index > 1) {
+            throw ExceptionMessage("Current symbol can contain only one char");
+            return;
+        }
+        if (index < symbols.length() - 2) {
+            throw ExceptionMessage("Next symbol can contain only one char");
+            return;
+        }
     }
     if (symbols.length() == 4){
-        return isValidSymbol(symbols.at(0)) &&
-               symbols.at(1) == '-' &&
-               symbols.at(2) == '>' &&
-               isValidSymbol(symbols.at(3));
+        if (symbols.at(0) == '-' && symbols.at(1) == '>') {
+            throw ExceptionMessage("Next symbol can contain only one char");
+            return;
+        }
+        if (symbols.at(2) == '-' && symbols.at(3) == '>') {
+            throw ExceptionMessage("Current symbol can contain only one char");
+            return;
+        }
+        if (!isValidSymbol(symbols.at(0))) {
+            throw ExceptionMessage("Invalid current symbol");
+            return;
+        }
+        if (symbols.at(1) != '-' || symbols.at(2) != '>') {
+            throw ExceptionMessage("'->' is missing");
+            return;
+        }
+        if (!isValidSymbol(symbols.at(3))) {
+            throw ExceptionMessage("Invalid next symbol");
+            return;
+        }
     }
     if (!((symbols.at(0) == '-' && symbols.at(1) == '>') ||
           (symbols.at(1) == '-' && symbols.at(2) == '>'))) {
-        return false;
+        throw ExceptionMessage("'->' is missing");
+        return;
     }
-    if (symbols.at(0) == '-') return isValidSymbol(symbols.at(2));
-    return isValidSymbol(symbols.at(0));
+    if (symbols.at(0) == '-' && !isValidSymbol(symbols.at(2))) {
+        throw ExceptionMessage("Invalid next symbol");
+        return;
+    } else return;
+    if (!isValidSymbol(symbols.at(0))) {
+        throw ExceptionMessage("Invalid current symbol");
+        return;
+    }
 }
+
 bool TuriParser::isValidDirection(QString & direction) {
     return direction.isEmpty() ||
             direction == "L" ||

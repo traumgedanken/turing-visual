@@ -29,7 +29,8 @@ SOURCES += \
     turiparser.cpp \
     turicommand.cpp \
     turiprogram.cpp \
-    turiparsererror.cpp
+    turiparsererror.cpp \
+    exceptionmessage.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -37,7 +38,8 @@ HEADERS += \
     turicommand.h \
     defines.h \
     turiprogram.h \
-    turiparsererror.h
+    turiparsererror.h \
+    exceptionmessage.h
 
 FORMS += \
         mainwindow.ui

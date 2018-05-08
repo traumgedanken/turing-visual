@@ -19,6 +19,6 @@ private:
 
     bool isValidState(QString & state);
     bool isValidSymbol(const QChar symbol);
-    bool isValidSymbols(QString & symbols);
+    void validateSymbols(QString & symbols);
     bool isValidDirection(QString & direction);
 };

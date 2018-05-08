@@ -18,7 +18,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_openFileBtn_clicked()
+void MainWindow::on_codeEdit_textChanged()
+{
+    QString codeText = ui->codeEdit->toPlainText();
+    TuriParser parser(codeText);
+    parser.parseTuriProgram();
+    auto errors = parser.getErrors();
+    ui->errorsList->clear();
+    for (auto error : errors) {
+        QString errorText = "At line " + QString::number(error->getLine()) + " : " + error->getErrorText();
+        ui->errorsList->addItem(errorText);
+    }
+
+}
+
+void MainWindow::on_actionOpen_triggered()
 {
     QFileDialog dialog(this);
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -38,13 +52,7 @@ void MainWindow::on_openFileBtn_clicked()
     }
 }
 
-void MainWindow::on_codeEdit_textChanged()
+void MainWindow::on_actionLight_triggered()
 {
-    QString codeText = ui->codeEdit->toPlainText();
-    TuriParser parser(codeText);
-    parser.parseTuriProgram();
-    auto errors = parser.getErrors();
-    for (auto error : errors) {
-        std::cout << "At line " << error->getLine() << " : " << error->getErrorText().toStdString() << std::endl;
-    }
+
 }
