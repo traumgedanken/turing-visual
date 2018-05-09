@@ -21,4 +21,8 @@ private:
     bool isValidSymbol(const QChar symbol);
     void validateSymbols(QString & symbols);
     bool isValidDirection(QString & direction);
+
+    void processErrorsAtLine(QVector<QString> & line, int lineIndex);
+
+    static void getSymbols(QString source, QChar & current, QChar & next);
 };

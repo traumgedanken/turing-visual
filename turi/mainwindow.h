@@ -1,7 +1,6 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
-
 #include <QMainWindow>
+#include <turiprogram.h>
+#include <turiparsererror.h>
 
 namespace Ui {
 class MainWindow;
@@ -10,7 +9,8 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    TuriProgram * program = nullptr;
+    QVector<TuriParserError *> errors;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -22,8 +22,17 @@ private slots:
 
     void on_actionLight_triggered();
 
+    void on_runBtn_clicked();
+
+    void on_inputEdit_textChanged(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
+
+    void printProgramTable();
+
+    void printErrorsList();
+
+    void validateRunBtn();
 };
 
-#endif // MAINWINDOW_H

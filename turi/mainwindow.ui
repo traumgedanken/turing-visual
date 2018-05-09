@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>785</width>
-    <height>459</height>
+    <width>1213</width>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,11 @@
       <height>301</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>FreeMono</family>
+     </font>
+    </property>
    </widget>
    <widget class="QListWidget" name="errorsList">
     <property name="geometry">
@@ -32,6 +37,75 @@
       <width>331</width>
       <height>281</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>FreeSans</family>
+      <pointsize>11</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>760</x>
+      <y>20</y>
+      <width>411</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="rowCount">
+     <number>0</number>
+    </property>
+    <property name="columnCount">
+     <number>5</number>
+    </property>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+   </widget>
+   <widget class="QPushButton" name="runBtn">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>350</y>
+      <width>95</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Run</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="inputEdit">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>390</y>
+      <width>221</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="outputResult">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>430</y>
+      <width>231</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
@@ -49,7 +123,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>785</width>
+     <width>1213</width>
      <height>23</height>
     </rect>
    </property>

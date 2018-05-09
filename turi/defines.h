@@ -3,6 +3,12 @@
 enum DIRECTION{
     LEFT,
     NONE,
-    RIGTH
+    RIGHT
 };
 
+enum ERROR_TYPE {
+    ERROR,
+    WARNING
+};
+
+#define ANY_SYMBOL '*'

@@ -5,6 +5,12 @@ TuriProgram::TuriProgram()
 
 }
 
+TuriProgram::~TuriProgram() {
+    for (auto & command : program) {
+        delete command;
+    }
+}
+
 void TuriProgram::addCommand(TuriCommand * newCommand) {
     program.push_back(newCommand);
 }

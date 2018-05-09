@@ -1,6 +1,3 @@
-#ifndef TURICOMMAND_H
-#define TURICOMMAND_H
-
 #include <QString>
 #include <defines.h>
 
@@ -30,4 +27,3 @@ public:
     void setDirection(DIRECTION _direction);
 };
 
-#endif // TURICOMMAND_H
