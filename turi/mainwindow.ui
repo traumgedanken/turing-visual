@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1213</width>
-    <height>571</height>
+    <width>845</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>40</y>
       <width>351</width>
       <height>301</height>
      </rect>
@@ -28,46 +28,6 @@
       <family>FreeMono</family>
      </font>
     </property>
-   </widget>
-   <widget class="QListWidget" name="errorsList">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>10</y>
-      <width>331</width>
-      <height>281</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>FreeSans</family>
-      <pointsize>11</pointsize>
-     </font>
-    </property>
-   </widget>
-   <widget class="QTableWidget" name="tableWidget">
-    <property name="geometry">
-     <rect>
-      <x>760</x>
-      <y>20</y>
-      <width>411</width>
-      <height>341</height>
-     </rect>
-    </property>
-    <property name="lineWidth">
-     <number>1</number>
-    </property>
-    <property name="rowCount">
-     <number>0</number>
-    </property>
-    <property name="columnCount">
-     <number>5</number>
-    </property>
-    <column/>
-    <column/>
-    <column/>
-    <column/>
-    <column/>
    </widget>
    <widget class="QPushButton" name="runBtn">
     <property name="enabled">
@@ -108,6 +68,78 @@
      <string/>
     </property>
    </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>10</y>
+      <width>441</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="tableTab">
+     <attribute name="title">
+      <string>Table</string>
+     </attribute>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>411</width>
+        <height>341</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="rowCount">
+       <number>0</number>
+      </property>
+      <property name="columnCount">
+       <number>5</number>
+      </property>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="errorTab">
+     <attribute name="title">
+      <string>Errors</string>
+     </attribute>
+     <widget class="QListWidget" name="errorsList">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>401</width>
+        <height>321</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>FreeSans</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+     </widget>
+    </widget>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
@@ -123,7 +155,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1213</width>
+     <width>845</width>
      <height>23</height>
     </rect>
    </property>
@@ -136,45 +168,80 @@
     <addaction name="actionSave_as"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Execute</string>
+    </property>
+    <addaction name="actionBuild"/>
+    <addaction name="actionRun"/>
+    <addaction name="actionNext_step"/>
+    <addaction name="actionTo_the_end"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_Turi_IDE"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuRun"/>
+   <addaction name="menuHelp"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionSave_as">
    <property name="text">
     <string>Save as</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>
-  </action>
-  <action name="actionLight">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Light</string>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionDark">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
+  <action name="actionBuild">
    <property name="text">
-    <string>Dark</string>
+    <string>Build</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="text">
+    <string>Run</string>
+   </property>
+  </action>
+  <action name="actionNext_step">
+   <property name="text">
+    <string>Next step</string>
+   </property>
+  </action>
+  <action name="actionTo_the_end">
+   <property name="text">
+    <string>To the end</string>
+   </property>
+  </action>
+  <action name="actionAbout_Turi_IDE">
+   <property name="text">
+    <string>About Turi IDE</string>
    </property>
   </action>
  </widget>

@@ -12,13 +12,13 @@ TuriCarette::TuriCarette(QString _word) {
 
 int TuriCarette::exec(TuriProgram * program) {
     currentState = program->getCommand(0)->getCurrentState();
-    qDebug() << currentState;
     while (true) {
         TuriCommand * currentCommand = nullptr;
         for (int i = 0; i < program->count(); i++) {
             TuriCommand * command = program->getCommand(i);
             if (command->getCurrentState() == currentState &&
-                command->getCurrentSymbol() == getSymbol()) {
+                (command->getCurrentSymbol() == getSymbol() ||
+                  command->getCurrentSymbol() == ANY_SYMBOL)) {
                 currentCommand = command;
                 break;
             }

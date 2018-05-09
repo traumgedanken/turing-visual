@@ -1,8 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QDebug>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QTextCodec>
+#include <QTextStream>
 #include <iostream>
 #include <turicarette.h>
 #include <turiparser.h>
@@ -10,21 +12,33 @@
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->tableWidget->resizeRowsToContents();
+    ui->tableWidget->resizeColumnsToContents();
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_codeEdit_textChanged() {
+    fileIsSaved = false;
     QString codeText = ui->codeEdit->toPlainText();
+    if (codeText.isEmpty()) {
+        ui->errorsList->clear();
+        ui->tabWidget->setTabText(1, "Errors");
+        ui->errorTab->setEnabled(false);
+        return;
+    }
     TuriParser parser(codeText);
     if (program != nullptr) delete program;
     program = parser.parseTuriProgram();
-    // TuriParserError::clearErrorsList(errors);
     errors = parser.getErrors();
     printErrorsList();
     if (errors.isEmpty()) {
         printProgramTable();
         validateRunBtn();
+        ui->tabWidget->setTabText(1, "Errors");
+    } else {
+        QString errorTabTitle = "Errors (" + QString::number(errors.length()) + ")";
+        ui->tabWidget->setTabText(1, errorTabTitle);
     }
 }
 
@@ -53,6 +67,8 @@ void MainWindow::printProgramTable() {
         ui->tableWidget->setItem(
             i, 4, new QTableWidgetItem(currentCommand->getNextState()));
     }
+    ui->tableWidget->resizeRowsToContents();
+    ui->tableWidget->resizeColumnsToContents();
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -62,7 +78,7 @@ void MainWindow::on_actionOpen_triggered() {
     QStringList fileNames;
     if (dialog.exec()) {
         fileNames = dialog.selectedFiles();
-        QString fileName = fileNames.at(0);
+        fileName = fileNames.at(0);
 
         QFile file(fileName);
         file.open(QIODevice::ReadOnly);
@@ -71,6 +87,7 @@ void MainWindow::on_actionOpen_triggered() {
         file.close();
 
         ui->codeEdit->setText(codeStr);
+        fileIsSaved = true;
     }
 }
 
@@ -89,6 +106,68 @@ void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
 }
 
 void MainWindow::validateRunBtn() {
+    int errorNumber = 0;
+    for (auto & error : errors) {
+        if (error->getErrorType() == ERROR) errorNumber++;
+    }
     ui->runBtn->setEnabled(!ui->inputEdit->text().isEmpty() &&
-                           errors.isEmpty());
+                           errorNumber == 0);
+}
+
+void MainWindow::on_actionSave_triggered() {
+    if (fileName.isEmpty()) {
+        QFileDialog dialog(this);
+        dialog.setAcceptMode(QFileDialog::AcceptSave);
+        dialog.setDefaultSuffix("turi");
+        QStringList fileNames;
+        if (dialog.exec()) {
+            fileNames = dialog.selectedFiles();
+            fileName = fileNames.at(0);
+            fileIsSaved = true;
+        }
+        return;
+    }
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << ui->codeEdit->toPlainText();
+    file.close();
+    fileIsSaved = true;
+}
+
+void MainWindow::on_actionSave_as_triggered() {
+    QFileDialog dialog(this);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setDefaultSuffix("turi");
+    QStringList fileNames;
+    if (dialog.exec()) {
+        fileNames = dialog.selectedFiles();
+        fileName = fileNames.at(0);
+        fileIsSaved = true;
+    }
+}
+
+int MainWindow::onClose() {
+    if (fileIsSaved ||
+            (ui->codeEdit->toPlainText().isEmpty() && fileName.isEmpty())) {
+        return 0;
+    }
+    QMessageBox::StandardButton res =
+        QMessageBox::question(this, "On close", "Code was edited.\nDo you want to save it?");
+    if (res == QMessageBox::StandardButton::Yes) {
+        on_actionSave_triggered();
+    } else return 0;
+    if (fileIsSaved) {
+        return 0;
+    } else return 1;
+}
+
+void MainWindow::closeEvent(QCloseEvent * ev) {
+    if (onClose() == 0) {
+        ev->accept();
+    } else ev->ignore();
+}
+
+void MainWindow::on_actionExit_triggered() {
+    if (onClose() == 0) exit(0);
 }

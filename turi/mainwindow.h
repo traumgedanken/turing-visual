@@ -1,3 +1,4 @@
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <turiparsererror.h>
 #include <turiprogram.h>
@@ -10,6 +11,8 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
     TuriProgram * program = nullptr;
     QVector<TuriParserError *> errors;
+    QString fileName;
+    bool fileIsSaved = false;
 
   public:
     explicit MainWindow(QWidget * parent = 0);
@@ -26,7 +29,15 @@ class MainWindow : public QMainWindow {
 
     void on_inputEdit_textChanged(const QString & arg1);
 
-  private:
+    void on_actionSave_triggered();
+
+    void on_actionSave_as_triggered();
+
+    void closeEvent(QCloseEvent * ev);
+
+    void on_actionExit_triggered();
+
+private:
     Ui::MainWindow * ui;
 
     void printProgramTable();
@@ -34,4 +45,6 @@ class MainWindow : public QMainWindow {
     void printErrorsList();
 
     void validateRunBtn();
+
+    int onClose();
 };
