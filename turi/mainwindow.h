@@ -1,21 +1,21 @@
 #include <QMainWindow>
-#include <turiprogram.h>
 #include <turiparsererror.h>
+#include <turiprogram.h>
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
     TuriProgram * program = nullptr;
     QVector<TuriParserError *> errors;
-public:
-    explicit MainWindow(QWidget *parent = 0);
+
+  public:
+    explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
 
-private slots:
+  private slots:
     void on_codeEdit_textChanged();
 
     void on_actionOpen_triggered();
@@ -24,10 +24,10 @@ private slots:
 
     void on_runBtn_clicked();
 
-    void on_inputEdit_textChanged(const QString &arg1);
+    void on_inputEdit_textChanged(const QString & arg1);
 
-private:
-    Ui::MainWindow *ui;
+  private:
+    Ui::MainWindow * ui;
 
     void printProgramTable();
 
@@ -35,4 +35,3 @@ private:
 
     void validateRunBtn();
 };
-

@@ -1,7 +1,6 @@
 #include "exceptionmessage.h"
 
-ExceptionMessage::ExceptionMessage(QString _errorMessage)
-{
+ExceptionMessage::ExceptionMessage(QString _errorMessage) {
     errorMessage = _errorMessage;
 }
 

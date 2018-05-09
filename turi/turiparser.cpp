@@ -1,11 +1,9 @@
 #include "turiparser.h"
-#include <iostream>
-#include <exceptionmessage.h>
 #include <defines.h>
+#include <exceptionmessage.h>
+#include <iostream>
 
-TuriParser::TuriParser(QString & _code) {
-    code = _code;
-}
+TuriParser::TuriParser(QString & _code) { code = _code; }
 
 TuriParser::~TuriParser() {
     for (auto error : errors) {
@@ -15,22 +13,27 @@ TuriParser::~TuriParser() {
 
 void TuriParser::processErrorsAtLine(QVector<QString> & line, int lineIndex) {
     if (line.length() < 4) {
-        errors.push_back(new TuriParserError(ERROR, lineIndex + 1, "Incomplite line"));
+        errors.push_back(
+            new TuriParserError(ERROR, lineIndex + 1, "Incomplite line"));
         return;
     }
     if (!isValidState(line[0])) {
-        errors.push_back(new TuriParserError(ERROR, lineIndex + 1, "Invalid current state"));
+        errors.push_back(
+            new TuriParserError(ERROR, lineIndex + 1, "Invalid current state"));
     }
     try {
         validateSymbols(line[1]);
-    } catch(ExceptionMessage & exception) {
-        errors.push_back(new TuriParserError(ERROR, lineIndex + 1, exception.getErrorMessage()));
+    } catch (ExceptionMessage & exception) {
+        errors.push_back(new TuriParserError(ERROR, lineIndex + 1,
+                                             exception.getErrorMessage()));
     }
-    if (!isValidDirection(line[2]) ) {
-        errors.push_back(new TuriParserError(ERROR, lineIndex + 1, "Invalid direction"));
+    if (!isValidDirection(line[2])) {
+        errors.push_back(
+            new TuriParserError(ERROR, lineIndex + 1, "Invalid direction"));
     }
     if (!isValidState(line[3])) {
-        errors.push_back(new TuriParserError(ERROR, lineIndex + 1, "Invalid next state"));
+        errors.push_back(
+            new TuriParserError(ERROR, lineIndex + 1, "Invalid next state"));
     }
 }
 
@@ -63,19 +66,18 @@ TuriProgram * TuriParser::parseTuriProgram() {
             if (line.at(3) == "!") endStateIsPresent = true;
         }
         if (!errorAtLineOccured && line.length() > 4) {
-            errors.push_back(new TuriParserError(ERROR, lineIndex + 1, "Overloaded line"));
+            errors.push_back(
+                new TuriParserError(ERROR, lineIndex + 1, "Overloaded line"));
         }
         if (errorAtLineOccured) continue;
         QChar current, next;
         QString currentState = line.at(0);
         TuriParser::getSymbols(line.at(1), current, next);
-        DIRECTION direction = line.at(2) == "L" ? LEFT :
-                                                     line.at(2)  == "R" ? RIGHT :
-                                                                              NONE;
+        DIRECTION direction =
+            line.at(2) == "L" ? LEFT : line.at(2) == "R" ? RIGHT : NONE;
         QString nextState = line.at(3).isEmpty() ? currentState : line.at(3);
-        TuriCommand * newCommand = new TuriCommand(currentState, nextState,
-                                                   current, next,
-                                                   direction);
+        TuriCommand * newCommand =
+            new TuriCommand(currentState, nextState, current, next, direction);
         program->addCommand(newCommand);
     }
     if (!endStateIsPresent) {
@@ -84,7 +86,7 @@ TuriProgram * TuriParser::parseTuriProgram() {
     return program;
 }
 
-QVector<QVector<QString>> TuriParser::getCsvTable(){
+QVector<QVector<QString>> TuriParser::getCsvTable() {
     QVector<QVector<QString>> table;
     QVector<QString> newLine;
     table.append(newLine);
@@ -93,8 +95,7 @@ QVector<QVector<QString>> TuriParser::getCsvTable(){
     int lineIndex = 0;
     while (true) {
         QString elem;
-        while (index < code.length() &&
-               code.at(index) != ',' &&
+        while (index < code.length() && code.at(index) != ',' &&
                code.at(index) != '\n') {
             elem.append(code.at(index));
             index++;
@@ -109,31 +110,25 @@ QVector<QVector<QString>> TuriParser::getCsvTable(){
             lineIndex = 0;
         }
         index++;
-
     }
     return table;
 }
 bool TuriParser::isValidState(QString & state) {
     if (state.isEmpty() || state == "!") return true;
     for (int index = 0; index < state.length(); index++) {
-        if(!state.at(index).isLetterOrNumber()) {
-            return false;
-        }
+        if (!state.at(index).isLetterOrNumber()) { return false; }
     }
     return true;
 }
 
 bool TuriParser::isValidSymbol(const QChar symbol) {
-    return symbol.isLetterOrNumber() ||
-            symbol == " ";
+    return symbol.isLetterOrNumber() || symbol == " ";
 }
 
 void TuriParser::validateSymbols(QString & symbols) {
     if (symbols == "->") return;
     int index = symbols.indexOf('-');
-    if (symbols.length() < 2 ||
-            index == -1 ||
-            symbols.at(index + 1) != '>') {
+    if (symbols.length() < 2 || index == -1 || symbols.at(index + 1) != '>') {
         throw ExceptionMessage("'->' is missing");
         return;
     }
@@ -147,7 +142,7 @@ void TuriParser::validateSymbols(QString & symbols) {
             return;
         }
     }
-    if (symbols.length() == 4){
+    if (symbols.length() == 4) {
         if (symbols.at(0) == '-' && symbols.at(1) == '>') {
             throw ExceptionMessage("Next symbol can contain only one char");
             return;
@@ -177,7 +172,8 @@ void TuriParser::validateSymbols(QString & symbols) {
     if (symbols.at(0) == '-' && !isValidSymbol(symbols.at(2))) {
         throw ExceptionMessage("Invalid next symbol");
         return;
-    } else return;
+    } else
+        return;
     if (!isValidSymbol(symbols.at(0))) {
         throw ExceptionMessage("Invalid current symbol");
         return;
@@ -185,13 +181,8 @@ void TuriParser::validateSymbols(QString & symbols) {
 }
 
 bool TuriParser::isValidDirection(QString & direction) {
-    return direction.isEmpty() ||
-            direction == "L" ||
-            direction == "N" ||
-            direction == "R";
+    return direction.isEmpty() || direction == "L" || direction == "N" ||
+           direction == "R";
 }
 
-QVector<TuriParserError *> TuriParser::getErrors() {
-    return errors;
-}
-
+QVector<TuriParserError *> TuriParser::getErrors() { return errors; }

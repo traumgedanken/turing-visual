@@ -2,12 +2,11 @@
 
 #include <QString>
 
-
-
-class ExceptionMessage : public std::exception
-{
+class ExceptionMessage : public std::exception {
     QString errorMessage;
-public:
+
+  public:
     ExceptionMessage(QString _errorMessage);
+
     QString getErrorMessage();
 };

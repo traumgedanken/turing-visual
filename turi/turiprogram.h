@@ -3,14 +3,19 @@
 #include <QVector>
 #include <turicommand.h>
 
-class TuriProgram
-{
+class TuriProgram {
     QVector<TuriCommand *> program;
-public:
+
+  public:
     TuriProgram();
+
     ~TuriProgram();
+
     void addCommand(TuriCommand * newCommand);
+
     TuriCommand * getCommand(int index);
-    int numberOfCommand();
+
+    int count();
+
     QVector<QString> getErrors();
 };

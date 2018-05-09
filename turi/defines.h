@@ -1,14 +1,7 @@
 #pragma once
 
-enum DIRECTION{
-    LEFT,
-    NONE,
-    RIGHT
-};
+enum DIRECTION { LEFT, NONE, RIGHT };
 
-enum ERROR_TYPE {
-    ERROR,
-    WARNING
-};
+enum ERROR_TYPE { ERROR, WARNING };
 
 #define ANY_SYMBOL '*'

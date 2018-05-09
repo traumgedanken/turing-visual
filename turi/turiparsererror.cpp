@@ -1,6 +1,7 @@
 #include "turiparsererror.h"
 
-TuriParserError::TuriParserError(ERROR_TYPE _errorType, int _line, QString _errorText) {
+TuriParserError::TuriParserError(ERROR_TYPE _errorType, int _line,
+                                 QString _errorText) {
     errorType = _errorType;
     line = _line;
     errorText = _errorText;
@@ -18,9 +19,7 @@ ERROR_TYPE TuriParserError::getErrorType() { return errorType; }
 QString TuriParserError::toQString() {
     QString errorTypeStr = errorType == ERROR ? "ERROR" : "WARNING";
     QString errorQString = errorTypeStr;
-    if (line != 0) {
-         errorQString += " at line " + QString::number(line);
-    }
+    if (line != 0) { errorQString += " at line " + QString::number(line); }
     errorQString += " : " + errorText;
     return errorQString;
 }
