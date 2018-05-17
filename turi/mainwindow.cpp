@@ -8,6 +8,7 @@
 #include <iostream>
 #include <turicarette.h>
 #include <turiparser.h>
+#include <htmltext.h>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -17,6 +18,16 @@ MainWindow::MainWindow(QWidget * parent)
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::printProgram() {
+    HtmlText textEditor(ui->codeEdit->toPlainText());
+    for (auto & error : errors) {
+        if (error->getLine() == 0) continue;
+        textEditor.setColorAtLine(error->getLine() - 1, "#DC143C");
+    }
+    ui->textEdit->setHtml(textEditor.getText());
+    qDebug() << textEditor.getText();
+}
 
 void MainWindow::on_codeEdit_textChanged() {
     fileIsSaved = false;
@@ -32,6 +43,7 @@ void MainWindow::on_codeEdit_textChanged() {
     program = parser.parseTuriProgram();
     errors = parser.getErrors();
     printErrorsList();
+    //printProgram();
     if (errors.isEmpty()) {
         printProgramTable();
         validateRunBtn();
@@ -170,4 +182,10 @@ void MainWindow::closeEvent(QCloseEvent * ev) {
 
 void MainWindow::on_actionExit_triggered() {
     if (onClose() == 0) exit(0);
+}
+
+void MainWindow::on_actionAbout_Turi_IDE_triggered() {
+    HtmlText textEditor(ui->codeEdit->toPlainText());
+    textEditor.setColorAtLine(1, "#DC143C");
+    qDebug() << textEditor.getText();
 }

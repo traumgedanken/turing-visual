@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>845</width>
+    <width>1070</width>
     <height>483</height>
    </rect>
   </property>
@@ -140,6 +140,16 @@
      </widget>
     </widget>
    </widget>
+   <widget class="QTextEdit" name="textEdit">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>40</y>
+      <width>231</width>
+      <height>311</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
@@ -155,13 +165,13 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>845</width>
-     <height>23</height>
+     <width>1070</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
@@ -170,7 +180,7 @@
    </widget>
    <widget class="QMenu" name="menuRun">
     <property name="title">
-     <string>Execute</string>
+     <string>E&amp;xecute</string>
     </property>
     <addaction name="actionBuild"/>
     <addaction name="actionRun"/>
@@ -189,7 +199,7 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -197,7 +207,7 @@
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -205,7 +215,7 @@
   </action>
   <action name="actionSave_as">
    <property name="text">
-    <string>Save as</string>
+    <string>Sa&amp;ve as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -213,7 +223,7 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -221,27 +231,27 @@
   </action>
   <action name="actionBuild">
    <property name="text">
-    <string>Build</string>
+    <string>&amp;Build</string>
    </property>
   </action>
   <action name="actionRun">
    <property name="text">
-    <string>Run</string>
+    <string>&amp;Run</string>
    </property>
   </action>
   <action name="actionNext_step">
    <property name="text">
-    <string>Next step</string>
+    <string>&amp;Next step</string>
    </property>
   </action>
   <action name="actionTo_the_end">
    <property name="text">
-    <string>To the end</string>
+    <string>&amp;To the end</string>
    </property>
   </action>
   <action name="actionAbout_Turi_IDE">
    <property name="text">
-    <string>About Turi IDE</string>
+    <string>&amp;About Turi IDE</string>
    </property>
   </action>
  </widget>

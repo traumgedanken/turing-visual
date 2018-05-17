@@ -1,5 +1,3 @@
-#include <bits/exception.h>
-
 #include <QString>
 
 class ExceptionMessage : public std::exception {

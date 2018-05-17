@@ -6,6 +6,8 @@
 
 QT       += core gui
 
+CONFIG += c++11
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = turi
@@ -31,7 +33,8 @@ SOURCES += \
     turiprogram.cpp \
     turiparsererror.cpp \
     exceptionmessage.cpp \
-    turicarette.cpp
+    turicarette.cpp \
+    htmltext.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +44,8 @@ HEADERS += \
     turiprogram.h \
     turiparsererror.h \
     exceptionmessage.h \
-    turicarette.h
+    turicarette.h \
+    htmltext.h
 
 FORMS += \
         mainwindow.ui

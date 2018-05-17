@@ -37,6 +37,8 @@ class MainWindow : public QMainWindow {
 
     void on_actionExit_triggered();
 
+    void on_actionAbout_Turi_IDE_triggered();
+
 private:
     Ui::MainWindow * ui;
 
@@ -47,4 +49,6 @@ private:
     void validateRunBtn();
 
     int onClose();
+
+    void printProgram();
 };
