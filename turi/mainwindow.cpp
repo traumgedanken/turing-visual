@@ -20,18 +20,23 @@ MainWindow::MainWindow(QWidget * parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::printProgram() {
+    codeEditedByUser = false;
     HtmlText textEditor(ui->codeEdit->toPlainText());
-    for (auto & error : errors) {
-        if (error->getLine() == 0) continue;
-        textEditor.setColorAtLine(error->getLine() - 1, "#DC143C");
-    }
-    ui->textEdit->setHtml(textEditor.getText());
-    qDebug() << textEditor.getText();
+    textEditor.markErrors(errors, "#E9967A");
+    QTextCursor cursor = ui->codeEdit->textCursor();
+    int position = cursor.position();
+    ui->codeEdit->setHtml(textEditor.getText());
+    cursor.setPosition(position);
+    ui->codeEdit->setTextCursor(cursor);
+    cursor = ui->codeEdit->textCursor();
+    codeEditedByUser = true;
 }
 
 void MainWindow::on_codeEdit_textChanged() {
     fileIsSaved = false;
+    if (!codeEditedByUser) return;
     QString codeText = ui->codeEdit->toPlainText();
+    if (!codeText.endsWith('\n')) codeText.append('\n');
     if (codeText.isEmpty()) {
         ui->errorsList->clear();
         ui->tabWidget->setTabText(1, "Errors");
@@ -43,7 +48,7 @@ void MainWindow::on_codeEdit_textChanged() {
     program = parser.parseTuriProgram();
     errors = parser.getErrors();
     printErrorsList();
-    //printProgram();
+    printProgram();
     if (errors.isEmpty()) {
         printProgramTable();
         validateRunBtn();
@@ -98,7 +103,7 @@ void MainWindow::on_actionOpen_triggered() {
         QString codeStr = QTextCodec::codecForMib(106)->toUnicode(a);
         file.close();
 
-        ui->codeEdit->setText(codeStr);
+        ui->codeEdit->setPlainText(codeStr);
         fileIsSaved = true;
     }
 }
@@ -187,5 +192,4 @@ void MainWindow::on_actionExit_triggered() {
 void MainWindow::on_actionAbout_Turi_IDE_triggered() {
     HtmlText textEditor(ui->codeEdit->toPlainText());
     textEditor.setColorAtLine(1, "#DC143C");
-    qDebug() << textEditor.getText();
 }

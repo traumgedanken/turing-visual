@@ -26,5 +26,20 @@ int HtmlText::getLineStartIndex(int lineNumber) {
     return index;
 }
 
+void HtmlText::markErrors(QVector<TuriParserError *> & errors, QString color) {
+    QStringList strList = text.split('\n');
+    QString start = "<font style=\"background-color:" + color + "\">";
+    QString end = "</font>";
+    QString newLine = "<br/>";
+    int errorIndex = 0;
+    text.clear();
+    for (int i = 0; i < strList.length(); i++) {
+        if (errorIndex < errors.size() && i == errors.at(errorIndex)->getLine() - 1) {
+            text.append(start + strList.at(i) + end + newLine);
+            errorIndex++;
+        } else text.append(strList.at(i) + newLine);
+    }
+}
+
 
 

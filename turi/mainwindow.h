@@ -13,6 +13,7 @@ class MainWindow : public QMainWindow {
     QVector<TuriParserError *> errors;
     QString fileName;
     bool fileIsSaved = false;
+    bool codeEditedByUser = true;
 
   public:
     explicit MainWindow(QWidget * parent = 0);
