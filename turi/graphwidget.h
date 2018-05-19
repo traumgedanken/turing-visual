@@ -1,6 +1,7 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
+#include <turiprogram.h>
 #include <QGraphicsView>
 
 class Node;
@@ -10,7 +11,7 @@ class GraphWidget : public QGraphicsView
     Q_OBJECT
 
 public:
-    GraphWidget(QWidget *parent = 0);
+    GraphWidget(QWidget *parent, TuriProgram *program);
 
     void itemMoved();
 
@@ -32,6 +33,9 @@ protected:
 private:
     int timerId;
     Node *centerNode;
+    QVector<Node *> states;
+
+    Node * getNode(QString stateName);
 };
 
 #endif // GRAPHWIDGET_H

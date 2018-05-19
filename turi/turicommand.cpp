@@ -16,6 +16,22 @@ QChar TuriCommand::getCurrentSymbol() { return currentSymbol; }
 QChar TuriCommand::getNextSymbol() { return nextSymbol; }
 DIRECTION TuriCommand::getDirection() { return direction; }
 
+QString TuriCommand::toArrowDescription() {
+    QString result;
+    result.append("'");
+    result.append(currentSymbol);
+    result.append("'/'");
+    result.append(nextSymbol);
+    result.append("',");
+    if (direction == LEFT) {
+        result.append("L");
+    } else if (direction == RIGHT) {
+        result.append("R");
+    } else result.append("N");
+    return result;
+}
+
+
 void TuriCommand::setCurrentState(QString _currentState) {
     currentState = _currentState;
 }

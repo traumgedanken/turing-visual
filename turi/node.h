@@ -13,6 +13,8 @@ class Node : public QGraphicsItem
 public:
     Node(GraphWidget *graphWidget, QString name);
 
+    QString getName();
+
     void addEdge(Edge *edge);
     QList<Edge *> edges() const;
 

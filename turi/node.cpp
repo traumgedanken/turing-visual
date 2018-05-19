@@ -7,6 +7,8 @@
 #include <QPainter>
 #include <QStyleOption>
 
+QString Node::getName() { return name; }
+
 Node::Node(GraphWidget *graphWidget, QString _name = "")
     : graph(graphWidget)
 {

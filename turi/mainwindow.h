@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow {
     QString fileName;
     bool fileIsSaved = false;
     bool codeEditedByUser = true;
-    GraphWidget *graph = new GraphWidget;
+    GraphWidget *graph = new GraphWidget(this, program);
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();

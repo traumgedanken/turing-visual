@@ -12,6 +12,8 @@ class TuriCommand {
     TuriCommand(QString _currentState, QString _nextState, QChar _currentSymbol,
                 QChar _nextSymbol, DIRECTION _direction);
 
+    QString toArrowDescription();
+
     QString getCurrentState();
 
     QString getNextState();

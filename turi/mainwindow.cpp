@@ -16,10 +16,8 @@ MainWindow::MainWindow(QWidget * parent)
     ui->setupUi(this);
     ui->tableWidget->resizeRowsToContents();
     ui->tableWidget->resizeColumnsToContents();
-//    QString name = "Graph";
-//    ui->tabWidget->addTab(graph, name);
-//    ui->tabWidget->setCornerWidget(graph);
-//    ui->tabWidget->r
+    QString name = "Graph";
+    ui->tabWidget->addTab(graph, name);
 }
 
 MainWindow::~MainWindow() {
@@ -61,6 +59,10 @@ void MainWindow::on_codeEdit_textChanged() {
         printProgramTable();
         validateRunBtn();
         ui->tabWidget->setTabText(1, "Errors");
+        ui->tabWidget->removeTab(2);
+        QString name = "Graph";
+        graph = new GraphWidget(this, program);
+        ui->tabWidget->addTab(graph, name);
     } else {
         QString errorTabTitle = "Errors (" + QString::number(errors.length()) + ")";
         ui->tabWidget->setTabText(1, errorTabTitle);

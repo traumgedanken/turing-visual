@@ -52,13 +52,13 @@
 #include "graphwidget.h"
 #include "edge.h"
 #include "node.h"
-
+#include <QDebug>
 #include <math.h>
 
 #include <QKeyEvent>
 //#include <QRandomGenerator>
 
-GraphWidget::GraphWidget(QWidget *parent)
+GraphWidget::GraphWidget(QWidget *parent, TuriProgram * program)
     : QGraphicsView(parent), timerId(0)
 {
     QGraphicsScene *scene = new QGraphicsScene(this);
@@ -73,46 +73,49 @@ GraphWidget::GraphWidget(QWidget *parent)
     setMinimumSize(400, 400);
     setWindowTitle(tr("Elastic Nodes"));
 
-    Node *node1 = new Node(this, "a");
-    Node *node2 = new Node(this, "b");
-    Node *node3 = new Node(this, "c");
-    Node *node4 = new Node(this, "d");
-    centerNode = new Node(this, "e");
-    Node *node6 = new Node(this, "f");
-    Node *node7 = new Node(this, "g");
-    Node *node8 = new Node(this, "h");
-    Node *node9 = new Node(this, "k");
-    scene->addItem(node1);
-    scene->addItem(node2);
-    scene->addItem(node3);
-    scene->addItem(node4);
+    if (program == nullptr) return;
+    QString endStateName = "!";
+    centerNode = new Node(this, endStateName);
+    states.push_back(centerNode);
     scene->addItem(centerNode);
-    scene->addItem(node6);
-    scene->addItem(node7);
-    scene->addItem(node8);
-    scene->addItem(node9);
-    scene->addItem(new Edge(node1, node2, "lol"));
-    scene->addItem(new Edge(node2, node3, "lol"));
-    scene->addItem(new Edge(node2, centerNode, "lol"));
-    scene->addItem(new Edge(node3, node6, "lol"));
-    scene->addItem(new Edge(node4, node1, "lol"));
-    scene->addItem(new Edge(node4, centerNode, "lol"));
-    scene->addItem(new Edge(centerNode, node6, "lol"));
-    scene->addItem(new Edge(centerNode, node8, "lol"));
-    scene->addItem(new Edge(node6, node9, "lol"));
-    scene->addItem(new Edge(node7, node4, "lol"));
-    scene->addItem(new Edge(node8, node7, "lol"));
-    scene->addItem(new Edge(node9, node8, "lol"));
+    for (int i = 0; i < program->count(); i++) {
+        QString stateName = program->getCommand(i)->getCurrentState();
+        if (getNode(stateName) == nullptr) {
+            Node * newNode = new Node(this, stateName);
+            states.push_back(newNode);
+            scene->addItem(newNode);
+        }
+    }
 
-    node1->setPos(-50, -50);
-    node2->setPos(0, -50);
-    node3->setPos(50, -50);
-    node4->setPos(-50, 0);
-    centerNode->setPos(0, 0);
-    node6->setPos(50, 0);
-    node7->setPos(-50, 50);
-    node8->setPos(0, 50);
-    node9->setPos(50, 50);
+    for (int i = 0; i < program->count(); i++) {
+        TuriCommand * currentCommand = program->getCommand(i);
+        QString currentState = currentCommand->getCurrentState();
+        QString nextState = currentCommand->getNextState();
+        Node * start = getNode(currentState);
+        Node * end = getNode(nextState);
+        scene->addItem(new Edge(start, end, currentCommand->toArrowDescription()));
+    }
+
+    int n = std::sqrt(states.length());
+    int step = 100 / (n + 1);
+    int row = 0;
+    int column = 0;
+    for (auto & node : states) {
+        node->setPos(-50 + column * step, -50 + row * step);
+        column++;
+        if (column == n) {
+            column = 0;
+            row++;
+        }
+    }
+}
+
+Node * GraphWidget::getNode(QString stateName) {
+    for (auto & node : states) {
+        if (node->getName() == stateName)
+            return node;
+    }
+    return nullptr;
 }
 
 void GraphWidget::itemMoved()
@@ -199,25 +202,11 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     // Fill
     QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
     gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::lightGray);
+    gradient.setColorAt(1, Qt::white);
     painter->fillRect(rect.intersected(sceneRect), gradient);
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(sceneRect);
 
-    // Text
-    QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
-                    sceneRect.width() - 4, sceneRect.height() - 4);
-    QString message(tr("Click and drag the nodes around, and zoom with the mouse "
-                       "wheel or the '+' and '-' keys"));
-
-    QFont font = painter->font();
-    font.setBold(true);
-    font.setPointSize(14);
-    painter->setFont(font);
-    painter->setPen(Qt::lightGray);
-    painter->drawText(textRect.translated(2, 2), message);
-    painter->setPen(Qt::black);
-    painter->drawText(textRect, message);
 }
 
 void GraphWidget::scaleView(qreal scaleFactor)
