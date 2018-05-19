@@ -13,12 +13,11 @@ void HtmlText::markErrors(QVector<TuriParserError *> & errors, QString color) {
     int errorIndex = 0;
     text.clear();
     for (int i = 0; i < strList.length(); i++) {
-        if (errorIndex < errors.size() && i == errors.at(errorIndex)->getLine() - 1) {
+        if (errorIndex < errors.size() &&
+            i == errors.at(errorIndex)->getLine() - 1) {
             text.append(start + strList.at(i) + end + newLine);
             errorIndex++;
-        } else text.append(strList.at(i) + newLine);
+        } else
+            text.append(strList.at(i) + newLine);
     }
 }
-
-
-

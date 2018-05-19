@@ -19,7 +19,7 @@ class TuriParserError {
     QString getErrorText();
 
     ERROR_TYPE getErrorType();
-    
+
     QString toQString();
 
     static void clearErrorsList(QVector<TuriParserError *> & errors);

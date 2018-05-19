@@ -27,10 +27,10 @@ QString TuriCommand::toArrowDescription() {
         result.append("L");
     } else if (direction == RIGHT) {
         result.append("R");
-    } else result.append("N");
+    } else
+        result.append("N");
     return result;
 }
-
 
 void TuriCommand::setCurrentState(QString _currentState) {
     currentState = _currentState;

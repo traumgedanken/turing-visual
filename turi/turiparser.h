@@ -17,7 +17,6 @@ class TuriParser {
 
     QVector<TuriParserError *> getErrors();
 
-
   private:
     QVector<QVector<QString>> getCsvTable();
 
@@ -26,7 +25,7 @@ class TuriParser {
     bool isValidState(QString & state);
 
     bool isValidSymbol(const QChar symbol);
-    
+
     void validateSymbols(QString & symbols);
 
     bool isValidDirection(QString & direction);

@@ -3,13 +3,13 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTabWidget>
 #include <QTextCodec>
 #include <QTextStream>
+#include <htmltext.h>
 #include <iostream>
 #include <turicarette.h>
 #include <turiparser.h>
-#include <htmltext.h>
-#include <QTabWidget>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -64,7 +64,8 @@ void MainWindow::on_codeEdit_textChanged() {
         graph = new GraphWidget(this, program);
         ui->tabWidget->addTab(graph, name);
     } else {
-        QString errorTabTitle = "Errors (" + QString::number(errors.length()) + ")";
+        QString errorTabTitle =
+            "Errors (" + QString::number(errors.length()) + ")";
         ui->tabWidget->setTabText(1, errorTabTitle);
     }
 }
@@ -176,23 +177,26 @@ void MainWindow::on_actionSave_as_triggered() {
 
 int MainWindow::onClose() {
     if (fileIsSaved ||
-            (ui->codeEdit->toPlainText().isEmpty() && fileName.isEmpty())) {
+        (ui->codeEdit->toPlainText().isEmpty() && fileName.isEmpty())) {
         return 0;
     }
-    QMessageBox::StandardButton res =
-        QMessageBox::question(this, "On close", "Code was edited.\nDo you want to save it?");
+    QMessageBox::StandardButton res = QMessageBox::question(
+        this, "On close", "Code was edited.\nDo you want to save it?");
     if (res == QMessageBox::StandardButton::Yes) {
         on_actionSave_triggered();
-    } else return 0;
+    } else
+        return 0;
     if (fileIsSaved) {
         return 0;
-    } else return 1;
+    } else
+        return 1;
 }
 
 void MainWindow::closeEvent(QCloseEvent * ev) {
     if (onClose() == 0) {
         ev->accept();
-    } else ev->ignore();
+    } else
+        ev->ignore();
 }
 
 void MainWindow::on_actionExit_triggered() {

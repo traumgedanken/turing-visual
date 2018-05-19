@@ -18,7 +18,7 @@ int TuriCarette::exec(TuriProgram * program) {
             TuriCommand * command = program->getCommand(i);
             if (command->getCurrentState() == currentState &&
                 (command->getCurrentSymbol() == getSymbol() ||
-                  command->getCurrentSymbol() == ANY_SYMBOL)) {
+                 command->getCurrentSymbol() == ANY_SYMBOL)) {
                 currentCommand = command;
                 break;
             }

@@ -1,8 +1,8 @@
 #include <QCloseEvent>
 #include <QMainWindow>
+#include <graphwidget.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
-#include <graphwidget.h>
 
 namespace Ui {
 class MainWindow;
@@ -15,7 +15,8 @@ class MainWindow : public QMainWindow {
     QString fileName;
     bool fileIsSaved = false;
     bool codeEditedByUser = true;
-    GraphWidget *graph = new GraphWidget(this, program);
+    GraphWidget * graph = new GraphWidget(this, program);
+
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -41,7 +42,7 @@ class MainWindow : public QMainWindow {
 
     void on_actionAbout_Turi_IDE_triggered();
 
-private:
+  private:
     Ui::MainWindow * ui;
 
     void printProgramTable();
