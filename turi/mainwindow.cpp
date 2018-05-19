@@ -9,15 +9,23 @@
 #include <turicarette.h>
 #include <turiparser.h>
 #include <htmltext.h>
+#include <QTabWidget>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->tableWidget->resizeRowsToContents();
     ui->tableWidget->resizeColumnsToContents();
+//    QString name = "Graph";
+//    ui->tabWidget->addTab(graph, name);
+//    ui->tabWidget->setCornerWidget(graph);
+//    ui->tabWidget->r
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+    delete ui;
+    delete graph;
+}
 
 void MainWindow::printProgram() {
     codeEditedByUser = false;
@@ -190,6 +198,5 @@ void MainWindow::on_actionExit_triggered() {
 }
 
 void MainWindow::on_actionAbout_Turi_IDE_triggered() {
-    HtmlText textEditor(ui->codeEdit->toPlainText());
-    textEditor.setColorAtLine(1, "#DC143C");
+    //
 }

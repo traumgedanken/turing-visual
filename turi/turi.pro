@@ -34,10 +34,14 @@ SOURCES += \
     turiparsererror.cpp \
     exceptionmessage.cpp \
     turicarette.cpp \
-    htmltext.cpp
+    htmltext.cpp \
+    edge.cpp \
+    node.cpp \
+    graphwidget.cpp
+
 
 HEADERS += \
-        mainwindow.h \
+    mainwindow.h \
     turiparser.h \
     turicommand.h \
     defines.h \
@@ -45,7 +49,10 @@ HEADERS += \
     turiparsererror.h \
     exceptionmessage.h \
     turicarette.h \
-    htmltext.h
+    htmltext.h \
+    edge.h \
+    node.h \
+    graphwidget.h
 
 FORMS += \
         mainwindow.ui

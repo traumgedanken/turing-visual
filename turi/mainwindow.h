@@ -2,6 +2,7 @@
 #include <QMainWindow>
 #include <turiparsererror.h>
 #include <turiprogram.h>
+#include <graphwidget.h>
 
 namespace Ui {
 class MainWindow;
@@ -14,7 +15,7 @@ class MainWindow : public QMainWindow {
     QString fileName;
     bool fileIsSaved = false;
     bool codeEditedByUser = true;
-
+    GraphWidget *graph = new GraphWidget;
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
