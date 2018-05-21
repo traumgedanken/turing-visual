@@ -61,7 +61,7 @@ GraphWidget::GraphWidget(QWidget * parent, TuriProgram * program)
     : QGraphicsView(parent), timerId(0) {
     QGraphicsScene * scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    scene->setSceneRect(-200, -200, 400, 400);
+    scene->setSceneRect(-225, -225, 450, 450);
     setScene(scene);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
@@ -165,24 +165,6 @@ void GraphWidget::wheelEvent(QWheelEvent * event) {
 void GraphWidget::drawBackground(QPainter * painter, const QRectF & rect) {
     Q_UNUSED(rect);
 
-    // Shadow
-    QRectF sceneRect = this->sceneRect();
-    QRectF rightShadow(sceneRect.right(), sceneRect.top() + 5, 5,
-                       sceneRect.height());
-    QRectF bottomShadow(sceneRect.left() + 5, sceneRect.bottom(),
-                        sceneRect.width(), 5);
-    if (rightShadow.intersects(rect) || rightShadow.contains(rect))
-        painter->fillRect(rightShadow, Qt::darkGray);
-    if (bottomShadow.intersects(rect) || bottomShadow.contains(rect))
-        painter->fillRect(bottomShadow, Qt::darkGray);
-
-    // Fill
-    QLinearGradient gradient(sceneRect.topLeft(), sceneRect.bottomRight());
-    gradient.setColorAt(0, Qt::white);
-    gradient.setColorAt(1, Qt::white);
-    painter->fillRect(rect.intersected(sceneRect), gradient);
-    painter->setBrush(Qt::NoBrush);
-    painter->drawRect(sceneRect);
 }
 
 void GraphWidget::scaleView(qreal scaleFactor) {

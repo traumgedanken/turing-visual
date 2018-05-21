@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPicture>
 #include <QTabWidget>
 #include <QTextCodec>
 #include <QTextStream>
@@ -119,14 +120,13 @@ void MainWindow::on_actionOpen_triggered() {
     }
 }
 
-void MainWindow::on_actionLight_triggered() {}
-
 void MainWindow::on_runBtn_clicked() {
-    TuriCarette carette(ui->inputEdit->text());
-    if (carette.exec(program) == 0) {
-        ui->outputResult->setText(carette.getResult());
-    } else
-        ui->outputResult->setText("Matching state not found");
+    TuriCarette carette(ui->inputEdit->text(), ui->outputResult);
+    carette.exec(program);
+    //    if (carette.exec(program) == 0) {
+    //        ui->outputResult->setText(carette.getResult());
+    //    } else
+    //        ui->outputResult->setText("Matching state not found");
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {

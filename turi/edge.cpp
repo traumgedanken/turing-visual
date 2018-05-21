@@ -54,7 +54,7 @@
 #include <qmath.h>
 
 Edge::Edge(Node * sourceNode, Node * destNode, QString _name = "")
-    : arrowSize(10) {
+    : arrowSize(8) {
     name = _name;
     setAcceptedMouseButtons(0);
     source = sourceNode;
@@ -76,9 +76,9 @@ void Edge::adjust() {
 
     prepareGeometryChange();
 
-    if (length > qreal(20.)) {
-        QPointF edgeOffset((line.dx() * 10) / length,
-                           (line.dy() * 10) / length);
+    if (length > qreal(80.)) {
+        QPointF edgeOffset((line.dx() * 20) / length,
+                           (line.dy() * 20) / length);
         sourcePoint = line.p1() + edgeOffset;
         destPoint = line.p2() - edgeOffset;
     } else {
@@ -105,14 +105,16 @@ void Edge::paint(QPainter * painter, const QStyleOptionGraphicsItem *,
     QLineF line(sourcePoint, destPoint);
     if (qFuzzyCompare(line.length(), qreal(0.))) return;
 
+    double angle = std::atan2(-line.dy(), line.dx());
+
     // Draw the line itself
     painter->setPen(
         QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
+    painter->drawChord(sourcePoint.x(), sourcePoint.y(), line.length(), 10, (int)angle, 20);
     painter->drawText((sourcePoint + destPoint) / 2, name);
 
     // Draw the arrows
-    double angle = std::atan2(-line.dy(), line.dx());
 
     QPointF destArrowP1 =
         destPoint + QPointF(sin(angle - M_PI / 3) * arrowSize,

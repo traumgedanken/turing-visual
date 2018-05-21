@@ -83,6 +83,7 @@ TuriProgram * TuriParser::parseTuriProgram() {
     if (!endStateIsPresent) {
         errors.push_back(new TuriParserError(WARNING, "No end state found"));
     }
+    // todo set errors list
     return program;
 }
 

@@ -26,8 +26,6 @@ class MainWindow : public QMainWindow {
 
     void on_actionOpen_triggered();
 
-    void on_actionLight_triggered();
-
     void on_runBtn_clicked();
 
     void on_inputEdit_textChanged(const QString & arg1);
@@ -54,4 +52,5 @@ class MainWindow : public QMainWindow {
     int onClose();
 
     void printProgram();
+
 };

@@ -1,4 +1,12 @@
 #include "turiprogram.h"
+#include <QByteArray>
+#include <QFile>
+#include <QIODevice>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QTextCodec>
+#include <QTextStream>
 
 TuriProgram::TuriProgram() {}
 
@@ -15,3 +23,32 @@ void TuriProgram::addCommand(TuriCommand * newCommand) {
 TuriCommand * TuriProgram::getCommand(int index) { return program.at(index); }
 
 int TuriProgram::count() { return program.length(); }
+
+
+QString TuriProgram::toJson() {
+    int programLength = program.length();
+    QJsonDocument doc;
+    QJsonObject commandsObj;
+    commandsObj.insert("length", programLength);
+
+    QJsonArray commandsArray;
+    for (int i = 0; i < programLength; i++) {
+        auto & currCommand = program.at(i);
+        QJsonObject command;
+        command.insert("number", i);
+        command.insert("currentState", currCommand->getCurrentState());
+        command.insert("nextState", currCommand->getNextState());
+        QString currentSymbol;
+        currentSymbol.append(currCommand->getCurrentSymbol());
+        command.insert("currentSymbol", currentSymbol);
+        QString nextSymbol;
+        currentSymbol.append(currCommand->getNextSymbol());
+        command.insert("nextSymbol", nextSymbol);
+        QString direction = currCommand->getDirection() == RIGHT ? "R" : currCommand->getDirection() == LEFT ? "L" : "N";
+        command.insert("direction", direction);
+        commandsArray.append(command);
+    }
+    commandsObj.insert("commands", commandsArray);
+    doc.setObject(commandsObj);
+    return doc.toJson();
+}

@@ -77,12 +77,12 @@ bool Node::advance() {
 
 QRectF Node::boundingRect() const {
     qreal adjust = 2;
-    return QRectF(-10 - adjust, -10 - adjust, 23 + adjust, 23 + adjust);
+    return QRectF(-20 - adjust, -20 - adjust, 46 + adjust, 46 + adjust);
 }
 
 QPainterPath Node::shape() const {
     QPainterPath path;
-    path.addEllipse(-10, -10, 20, 20);
+    path.addEllipse(-20, -20, 40, 40);
     return path;
 }
 
@@ -96,17 +96,17 @@ void Node::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
     if (option->state & QStyle::State_Sunken) {
         gradient.setCenter(3, 3);
         gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(Qt::yellow).light(120));
-        gradient.setColorAt(0, QColor(Qt::darkYellow).light(120));
+        gradient.setColorAt(1, QColor(255, 180, 180).light(115));
+        gradient.setColorAt(0, QColor(255, 180, 180).light(115));
     } else {
-        gradient.setColorAt(0, Qt::yellow);
-        gradient.setColorAt(1, Qt::darkYellow);
+        gradient.setColorAt(0, QColor(255, 180, 180));
+        gradient.setColorAt(1, QColor(255, 180, 180));
     }
     painter->setBrush(gradient);
 
     painter->setPen(QPen(Qt::black, 0));
-    painter->drawEllipse(-10, -10, 20, 20);
-    painter->drawText(-10, -10, 20, 20, 4, name);
+    painter->drawEllipse(-20, -20, 40, 40);
+    painter->drawText(-20, -20, 40, 40, Qt::AlignCenter, name);
 }
 
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant & value) {
