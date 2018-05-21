@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QString>
 #include <turiprogram.h>
 #include <QLabel>
@@ -9,13 +11,16 @@ class TuriCarette {
     QLabel * label = nullptr;
 
   public:
-    TuriCarette(QString _word, QLabel *_label);
+    TuriCarette() {}
+    TuriCarette(QString _word, QLabel * label, QString & _currentState);
 
     int exec(TuriProgram * program);
 
     QString getResult();
 
     void drawTable();
+
+    void drawWord();
 
   private:
     void move(DIRECTION direction);
@@ -25,6 +30,4 @@ class TuriCarette {
     void setSymbol(QChar symbol);
 
     void setState(QString state);
-
-    void drawWord();
 };

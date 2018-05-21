@@ -11,6 +11,7 @@
 #include <iostream>
 #include <turicarette.h>
 #include <turiparser.h>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -121,8 +122,18 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_runBtn_clicked() {
-    TuriCarette carette(ui->inputEdit->text(), ui->outputResult);
-    carette.exec(program);
+    if (firstRun) {
+        QString firstState = program->getCommand(0)->getCurrentState();
+        carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState);
+        firstRun = false;
+        carette.drawWord();
+        ui->nextBtn->setEnabled(true);
+        return;
+    }
+    if (carette.exec(program) != 0) {
+        ui->nextBtn->setEnabled(false);
+        firstRun = true;
+    }
     //    if (carette.exec(program) == 0) {
     //        ui->outputResult->setText(carette.getResult());
     //    } else
@@ -205,4 +216,9 @@ void MainWindow::on_actionExit_triggered() {
 
 void MainWindow::on_actionAbout_Turi_IDE_triggered() {
     //
+}
+
+void MainWindow::on_nextBtn_clicked()
+{
+    on_runBtn_clicked();
 }

@@ -5,20 +5,19 @@
 #include <exceptionmessage.h>
 #include <QThread>
 
-TuriCarette::TuriCarette(QString _word, QLabel * _label) {
+TuriCarette::TuriCarette(QString _word, QLabel * _label, QString & _currentState) {
     label = _label;
     for (int i = 0; i < 100; i++)
         word.append(' ');
     int wordLength = _word.length();
     position = (100 - wordLength) / 2;
     word.replace(position, wordLength, _word);
+    currentState = _currentState;
 }
 
 int TuriCarette::exec(TuriProgram * program) {
-    currentState = program->getCommand(0)->getCurrentState();
-    while (true) {
-        drawWord();
-        //QObject().thread()->usleep(1000*1000*2);
+
+//    while (true) {
         TuriCommand * currentCommand = nullptr;
         for (int i = 0; i < program->count(); i++) {
             TuriCommand * command = program->getCommand(i);
@@ -29,13 +28,13 @@ int TuriCarette::exec(TuriProgram * program) {
                 break;
             }
         }
-        if (currentCommand == nullptr) return 1;
+        if (currentCommand == nullptr) return -1;
         setSymbol(currentCommand->getNextSymbol());
         setState(currentCommand->getNextState());
         move(currentCommand->getDirection());
-        if (currentState == "!") break;
-    }
-    qDebug() << getResult();
+        drawWord();
+        if (currentState == "!") return 1;
+    //}
     return 0;
 }
 
@@ -115,11 +114,12 @@ void TuriCarette::drawWord() {
     p.setFont(font);
     for (int i = 0; i < 8; i++) {
         QString ch = word.at(position + i - 3);
-        qDebug() << ch;
-
         p.drawText(i * 100, 0, 100, 100, Qt::AlignCenter, ch);
     }
-    qDebug() << "end";
+    font.setPointSize(25);
+    p.setFont(font);
+    p.drawText(300, 100, 100, 50, Qt::AlignCenter, currentState);
     p.end();
     label->setPicture(pi);
+    //QObject().thread()->usleep(1000*1000*2);
 }

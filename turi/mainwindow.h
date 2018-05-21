@@ -3,6 +3,7 @@
 #include <graphwidget.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
+#include <turicarette.h>
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +17,8 @@ class MainWindow : public QMainWindow {
     bool fileIsSaved = false;
     bool codeEditedByUser = true;
     GraphWidget * graph = new GraphWidget(this, program);
-
+    bool firstRun = true;
+    TuriCarette carette;
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -40,7 +42,9 @@ class MainWindow : public QMainWindow {
 
     void on_actionAbout_Turi_IDE_triggered();
 
-  private:
+    void on_nextBtn_clicked();
+
+private:
     Ui::MainWindow * ui;
 
     void printProgramTable();
