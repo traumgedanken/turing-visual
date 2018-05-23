@@ -86,7 +86,7 @@
          <rect>
           <x>0</x>
           <y>380</y>
-          <width>181</width>
+          <width>121</width>
           <height>26</height>
          </rect>
         </property>
@@ -110,14 +110,30 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>234</x>
+          <x>294</x>
           <y>380</y>
-          <width>161</width>
+          <width>101</width>
           <height>26</height>
          </rect>
         </property>
         <property name="text">
          <string>Next</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="prevBtn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>380</y>
+          <width>95</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Prev</string>
         </property>
        </widget>
       </widget>

@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow {
 
     void on_nextBtn_clicked();
 
+    void on_prevBtn_clicked();
+
 private:
     Ui::MainWindow * ui;
 

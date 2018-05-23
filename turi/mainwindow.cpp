@@ -12,6 +12,7 @@
 #include <turicarette.h>
 #include <turiparser.h>
 #include <QThread>
+#include <iostream>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -58,6 +59,7 @@ void MainWindow::on_codeEdit_textChanged() {
     printErrorsList();
     printProgram();
     if (errors.isEmpty()) {
+        std::cout << program->toJson().toStdString() << std::endl;
         printProgramTable();
         validateRunBtn();
         ui->tabWidget->setTabText(1, "Errors");
@@ -122,22 +124,9 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_runBtn_clicked() {
-    if (firstRun) {
-        QString firstState = program->getCommand(0)->getCurrentState();
-        carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState);
-        firstRun = false;
-        carette.drawWord();
-        ui->nextBtn->setEnabled(true);
-        return;
-    }
-    if (carette.exec(program) != 0) {
-        ui->nextBtn->setEnabled(false);
-        firstRun = true;
-    }
-    //    if (carette.exec(program) == 0) {
-    //        ui->outputResult->setText(carette.getResult());
-    //    } else
-    //        ui->outputResult->setText("Matching state not found");
+    QString firstState = program->getCommand(0)->getCurrentState();
+    carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState, program);
+    ui->nextBtn->setEnabled(true);
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
@@ -162,10 +151,11 @@ void MainWindow::on_actionSave_triggered() {
         if (dialog.exec()) {
             fileNames = dialog.selectedFiles();
             fileName = fileNames.at(0);
+            qDebug() << fileName;
             fileIsSaved = true;
         }
-        return;
     }
+
     QFile file(fileName);
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream out(&file);
@@ -184,6 +174,13 @@ void MainWindow::on_actionSave_as_triggered() {
         fileName = fileNames.at(0);
         fileIsSaved = true;
     }
+
+    QFile file(fileName);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << ui->codeEdit->toPlainText();
+    file.close();
+    fileIsSaved = true;
 }
 
 int MainWindow::onClose() {
@@ -220,5 +217,16 @@ void MainWindow::on_actionAbout_Turi_IDE_triggered() {
 
 void MainWindow::on_nextBtn_clicked()
 {
-    on_runBtn_clicked();
+   bool succes = carette.next();
+   if (!succes) {
+       ui->nextBtn->setEnabled(false);
+   } else ui->prevBtn->setEnabled(true);
+}
+
+void MainWindow::on_prevBtn_clicked()
+{
+    bool succes = carette.prev();
+    if (!succes) {
+        ui->prevBtn->setEnabled(false);
+    } else ui->nextBtn->setEnabled(true);
 }
