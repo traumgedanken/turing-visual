@@ -68,6 +68,8 @@ void TuriCarette::setSymbol(QChar symbol) { word.replace(position, 1, symbol); }
 void TuriCarette::setState(QString state) { currentState = state; }
 
 void TuriCarette::draw() {
+    QString currStateTmp = step == states.length() ? "!" : states.at(step);
+
     label->clear();
     QPicture pi;
     QPainter p(&pi);
@@ -75,7 +77,9 @@ void TuriCarette::draw() {
     p.setRenderHint(QPainter::Antialiasing);
 
     p.setPen(Qt::NoPen);
-    p.setBrush(QColor(120, 180, 150));
+    if (currStateTmp == "!") {
+        p.setBrush(QColor(255, 150, 140));
+    } else p.setBrush(QColor(120, 180, 150));
     p.drawRect((currentCellNumber - 1) * cellWidth, 0, cellWidth, cellHeigth);
 
     p.setPen(QPen(Qt::darkGray, 2));
@@ -90,7 +94,7 @@ void TuriCarette::draw() {
     QFont font = p.font() ;
     font.setPointSize(25);
     p.setFont(font);
-    QString currWord = step == word.length() ? words.at(step - 1) : words.at(step);
+    QString currWord = step == words.length() ? word.mid(position - currentCellNumber + 1, cellNumber) : words.at(step);
     for (int i = 0; i < cellNumber; i++) {
         QString ch = currWord.at(i);
         qDebug() << currWord.length();
@@ -98,7 +102,6 @@ void TuriCarette::draw() {
     }
     font.setPointSize(10);
     p.setFont(font);
-    QString currStateTmp = step == states.length() ? "!" : states.at(step);
     p.drawText((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25, Qt::AlignCenter, currStateTmp);
     p.end();
     label->setPicture(pi);
