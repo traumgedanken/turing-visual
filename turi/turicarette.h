@@ -1,8 +1,8 @@
 #pragma once
 
+#include <QLabel>
 #include <QString>
 #include <turiprogram.h>
-#include <QLabel>
 
 class TuriCarette {
     QString word;
@@ -20,7 +20,8 @@ class TuriCarette {
 
   public:
     TuriCarette() {}
-    TuriCarette(QString _word, QLabel * label, QString & _currentState, TuriProgram *program);
+    TuriCarette(QString _word, QLabel * label, QString & _currentState,
+                TuriProgram * program);
 
     QString getResult();
 

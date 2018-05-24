@@ -2,10 +2,11 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPicture>
-#include <exceptionmessage.h>
 #include <QThread>
+#include <exceptionmessage.h>
 
-TuriCarette::TuriCarette(QString _word, QLabel * _label, QString & _currentState, TuriProgram * program) {
+TuriCarette::TuriCarette(QString _word, QLabel * _label,
+                         QString & _currentState, TuriProgram * program) {
     label = _label;
     for (int i = 0; i < 100; i++)
         word.append(' ');
@@ -20,7 +21,8 @@ TuriCarette::TuriCarette(QString _word, QLabel * _label, QString & _currentState
 void TuriCarette::exec(TuriProgram * program) {
 
     while (true) {
-        QString caretteWord = word.mid(position - currentCellNumber + 1, cellNumber);
+        QString caretteWord =
+            word.mid(position - currentCellNumber + 1, cellNumber);
         words.append(caretteWord);
         states.append(currentState);
         TuriCommand * currentCommand = nullptr;
@@ -79,7 +81,8 @@ void TuriCarette::draw() {
     p.setPen(Qt::NoPen);
     if (currStateTmp == "!") {
         p.setBrush(QColor(255, 150, 140));
-    } else p.setBrush(QColor(120, 180, 150));
+    } else
+        p.setBrush(QColor(120, 180, 150));
     p.drawRect((currentCellNumber - 1) * cellWidth, 0, cellWidth, cellHeigth);
 
     p.setPen(QPen(Qt::darkGray, 2));
@@ -91,21 +94,26 @@ void TuriCarette::draw() {
     }
 
     p.setPen(QPen(Qt::black));
-    QFont font = p.font() ;
+    QFont font = p.font();
     font.setPointSize(25);
     p.setFont(font);
-    QString currWord = step == words.length() ? word.mid(position - currentCellNumber + 1, cellNumber) : words.at(step);
+    QString currWord =
+        step == words.length()
+            ? word.mid(position - currentCellNumber + 1, cellNumber)
+            : words.at(step);
     for (int i = 0; i < cellNumber; i++) {
         QString ch = currWord.at(i);
         qDebug() << currWord.length();
-        p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter, ch);
+        p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter,
+                   ch);
     }
     font.setPointSize(10);
     p.setFont(font);
-    p.drawText((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25, Qt::AlignCenter, currStateTmp);
+    p.drawText((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25,
+               Qt::AlignCenter, currStateTmp);
     p.end();
     label->setPicture(pi);
-    //QObject().thread()->usleep(1000*1000*2);
+    // QObject().thread()->usleep(1000*1000*2);
 }
 
 bool TuriCarette::next() {

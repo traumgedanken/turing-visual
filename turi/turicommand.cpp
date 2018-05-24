@@ -23,12 +23,7 @@ QString TuriCommand::toArrowDescription() {
     result.append("'/'");
     result.append(nextSymbol);
     result.append("',");
-    if (direction == LEFT) {
-        result.append("L");
-    } else if (direction == RIGHT) {
-        result.append("R");
-    } else
-        result.append("N");
+    result.append(directionToQString(direction));
     return result;
 }
 
@@ -41,3 +36,17 @@ void TuriCommand::setCurrentSymbol(QChar _currentSymbol) {
 }
 void TuriCommand::setNextSymbol(QChar _nextSymbol) { nextSymbol = _nextSymbol; }
 void TuriCommand::setDirection(DIRECTION _direction) { direction = _direction; }
+
+QString TuriCommand::directionToQString(DIRECTION _direction) {
+    switch (_direction) {
+    case LEFT: return "L";
+    case RIGHT: return "R";
+    default: return "N";
+    }
+}
+
+DIRECTION TuriCommand::QStringToDirection(QString str) {
+    if (str == "L") return LEFT;
+    if (str == "R") return RIGHT;
+    return NONE;
+}

@@ -5,9 +5,9 @@ HtmlText::HtmlText(QString _text) { text = _text; }
 
 QString HtmlText::getText() { return text; }
 
-void HtmlText::markErrors(QVector<TuriParserError *> & errors, QString color) {
+void HtmlText::markErrors(QVector<TuriParserError *> & errors) {
     QStringList strList = text.split('\n');
-    QString start = "<font style=\"background-color:" + color + "\">";
+    QString start = "<font style=\"background-color:" + ERROR_COLOR + "\">";
     QString end = "</font>";
     QString newLine = "<br/>";
     int errorIndex = 0;

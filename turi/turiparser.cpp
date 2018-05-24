@@ -37,6 +37,18 @@ void TuriParser::processErrorsAtLine(QVector<QString> & line, int lineIndex) {
     }
 }
 
+void TuriParser::errorsPostProcess(TuriProgram * program) {
+    for (int i = 0; i < program->count(); i++) {
+        auto command = program->getCommand(i);
+        QString nextState = command->getNextState();
+        if (nextState == "!") continue;
+        if (program->getCommandWithCurrentState(nextState) == nullptr) {
+            errors.push_back(new TuriParserError(
+                ERROR, i + 1, "'" + nextState + "' is not defined"));
+        }
+    }
+}
+
 void TuriParser::getSymbols(QString source, QChar & current, QChar & next) {
     if (source.length() == 4) {
         current = source.at(0);
@@ -73,8 +85,7 @@ TuriProgram * TuriParser::parseTuriProgram() {
         QChar current, next;
         QString currentState = line.at(0);
         TuriParser::getSymbols(line.at(1), current, next);
-        DIRECTION direction =
-            line.at(2) == "L" ? LEFT : line.at(2) == "R" ? RIGHT : NONE;
+        DIRECTION direction = TuriCommand::QStringToDirection(line.at(2));
         QString nextState = line.at(3).isEmpty() ? currentState : line.at(3);
         TuriCommand * newCommand =
             new TuriCommand(currentState, nextState, current, next, direction);
@@ -84,6 +95,8 @@ TuriProgram * TuriParser::parseTuriProgram() {
         errors.push_back(new TuriParserError(WARNING, "No end state found"));
     }
     // todo set errors list
+
+    errorsPostProcess(program);
     return program;
 }
 

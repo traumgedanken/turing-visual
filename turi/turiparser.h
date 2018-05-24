@@ -32,5 +32,7 @@ class TuriParser {
 
     void processErrorsAtLine(QVector<QString> & line, int lineIndex);
 
+    void errorsPostProcess(TuriProgram * program);
+
     static void getSymbols(QString source, QChar & current, QChar & next);
 };

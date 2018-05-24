@@ -7,12 +7,11 @@
 #include <QTabWidget>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QThread>
 #include <htmltext.h>
 #include <iostream>
 #include <turicarette.h>
 #include <turiparser.h>
-#include <QThread>
-#include <iostream>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -31,7 +30,7 @@ MainWindow::~MainWindow() {
 void MainWindow::printProgram() {
     codeEditedByUser = false;
     HtmlText textEditor(ui->codeEdit->toPlainText());
-    textEditor.markErrors(errors, "#E9967A");
+    textEditor.markErrors(errors);
     QTextCursor cursor = ui->codeEdit->textCursor();
     int position = cursor.position();
     ui->codeEdit->setHtml(textEditor.getText());
@@ -42,16 +41,17 @@ void MainWindow::printProgram() {
 }
 
 void MainWindow::on_codeEdit_textChanged() {
+    qDebug() << ui->codeEdit->toPlainText();
     fileIsSaved = false;
     if (!codeEditedByUser) return;
     QString codeText = ui->codeEdit->toPlainText();
-    if (!codeText.endsWith('\n')) codeText.append('\n');
     if (codeText.isEmpty()) {
         ui->errorsList->clear();
         ui->tabWidget->setTabText(1, "Errors");
         ui->errorTab->setEnabled(false);
         return;
     }
+    if (!codeText.endsWith('\n')) codeText.append('\n');
     TuriParser parser(codeText);
     if (program != nullptr) delete program;
     program = parser.parseTuriProgram();
@@ -59,7 +59,6 @@ void MainWindow::on_codeEdit_textChanged() {
     printErrorsList();
     printProgram();
     if (errors.isEmpty()) {
-        std::cout << program->toJson().toStdString() << std::endl;
         printProgramTable();
         validateRunBtn();
         ui->tabWidget->setTabText(1, "Errors");
@@ -92,9 +91,7 @@ void MainWindow::printProgramTable() {
         ui->tableWidget->setItem(
             i, 2, new QTableWidgetItem(currentCommand->getNextSymbol()));
         QString direction =
-            currentCommand->getDirection() == LEFT
-                ? "L"
-                : currentCommand->getDirection() == NONE ? "N" : "R";
+            TuriCommand::directionToQString(currentCommand->getDirection());
         ui->tableWidget->setItem(i, 3, new QTableWidgetItem(direction));
         ui->tableWidget->setItem(
             i, 4, new QTableWidgetItem(currentCommand->getNextState()));
@@ -125,7 +122,8 @@ void MainWindow::on_actionOpen_triggered() {
 
 void MainWindow::on_runBtn_clicked() {
     QString firstState = program->getCommand(0)->getCurrentState();
-    carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState, program);
+    carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState,
+                          program);
     ui->nextBtn->setEnabled(true);
 }
 
@@ -215,18 +213,18 @@ void MainWindow::on_actionAbout_Turi_IDE_triggered() {
     //
 }
 
-void MainWindow::on_nextBtn_clicked()
-{
-   bool succes = carette.next();
-   if (!succes) {
-       ui->nextBtn->setEnabled(false);
-   } else ui->prevBtn->setEnabled(true);
+void MainWindow::on_nextBtn_clicked() {
+    bool succes = carette.next();
+    if (!succes) {
+        ui->nextBtn->setEnabled(false);
+    } else
+        ui->prevBtn->setEnabled(true);
 }
 
-void MainWindow::on_prevBtn_clicked()
-{
+void MainWindow::on_prevBtn_clicked() {
     bool succes = carette.prev();
     if (!succes) {
         ui->prevBtn->setEnabled(false);
-    } else ui->nextBtn->setEnabled(true);
+    } else
+        ui->nextBtn->setEnabled(true);
 }

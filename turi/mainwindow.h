@@ -1,9 +1,9 @@
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <graphwidget.h>
+#include <turicarette.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
-#include <turicarette.h>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
     GraphWidget * graph = new GraphWidget(this, program);
     bool firstRun = true;
     TuriCarette carette;
+
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -46,7 +47,7 @@ class MainWindow : public QMainWindow {
 
     void on_prevBtn_clicked();
 
-private:
+  private:
     Ui::MainWindow * ui;
 
     void printProgramTable();
@@ -58,5 +59,4 @@ private:
     int onClose();
 
     void printProgram();
-
 };

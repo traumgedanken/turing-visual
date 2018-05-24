@@ -25,4 +25,6 @@ class TuriProgram {
     QString toJson();
 
     void setErrorsList(QVector<TuriParserError *> & _errors);
+
+    TuriCommand * getCommandWithCurrentState(QString _currentState);
 };

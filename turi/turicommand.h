@@ -33,4 +33,8 @@ class TuriCommand {
     void setNextSymbol(QChar _nextSymbol);
 
     void setDirection(DIRECTION _direction);
+
+    static QString directionToQString(DIRECTION _direction);
+
+    static DIRECTION QStringToDirection(QString str);
 };

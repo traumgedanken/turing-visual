@@ -24,7 +24,6 @@ TuriCommand * TuriProgram::getCommand(int index) { return program.at(index); }
 
 int TuriProgram::count() { return program.length(); }
 
-
 QString TuriProgram::toJson() {
     int programLength = program.length();
     QJsonDocument doc;
@@ -44,11 +43,19 @@ QString TuriProgram::toJson() {
         QString nextSymbol;
         currentSymbol.append(currCommand->getNextSymbol());
         command.insert("nextSymbol", nextSymbol);
-        QString direction = currCommand->getDirection() == RIGHT ? "R" : currCommand->getDirection() == LEFT ? "L" : "N";
+        QString direction =
+            TuriCommand::directionToQString(currCommand->getDirection());
         command.insert("direction", direction);
         commandsArray.append(command);
     }
     commandsObj.insert("commands", commandsArray);
     doc.setObject(commandsObj);
     return doc.toJson();
+}
+
+TuriCommand * TuriProgram::getCommandWithCurrentState(QString _currentState) {
+    for (auto command : program) {
+        if (command->getCurrentState() == _currentState) return command;
+    }
+    return nullptr;
 }
