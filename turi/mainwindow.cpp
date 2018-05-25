@@ -41,7 +41,6 @@ void MainWindow::printProgram() {
 }
 
 void MainWindow::on_codeEdit_textChanged() {
-    qDebug() << ui->codeEdit->toPlainText();
     fileIsSaved = false;
     if (!codeEditedByUser) return;
     QString codeText = ui->codeEdit->toPlainText();
@@ -115,6 +114,7 @@ void MainWindow::on_actionOpen_triggered() {
         QString codeStr = QTextCodec::codecForMib(106)->toUnicode(a);
         file.close();
 
+        originCodeText = codeStr;
         ui->codeEdit->setPlainText(codeStr);
         fileIsSaved = true;
     }
@@ -124,6 +124,7 @@ void MainWindow::on_runBtn_clicked() {
     QString firstState = program->getCommand(0)->getCurrentState();
     carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState,
                           program);
+    markCurrentLine();
     ui->nextBtn->setEnabled(true);
 }
 
@@ -149,7 +150,6 @@ void MainWindow::on_actionSave_triggered() {
         if (dialog.exec()) {
             fileNames = dialog.selectedFiles();
             fileName = fileNames.at(0);
-            qDebug() << fileName;
             fileIsSaved = true;
         }
     }
@@ -182,7 +182,7 @@ void MainWindow::on_actionSave_as_triggered() {
 }
 
 int MainWindow::onClose() {
-    if (fileIsSaved ||
+    if (fileIsSaved || ui->codeEdit->toPlainText() == originCodeText ||
         (ui->codeEdit->toPlainText().isEmpty() && fileName.isEmpty())) {
         return 0;
     }
@@ -213,12 +213,26 @@ void MainWindow::on_actionAbout_Turi_IDE_triggered() {
     //
 }
 
+void MainWindow::markCurrentLine() {
+    HtmlText textEditor(ui->codeEdit->toPlainText());
+    int line = carette.getLine();
+    textEditor.markLine(line);
+    codeEditedByUser = false;
+    ui->codeEdit->setHtml(textEditor.getText());
+    codeEditedByUser = true;
+}
+
 void MainWindow::on_nextBtn_clicked() {
     bool succes = carette.next();
     if (!succes) {
+        codeEditedByUser = false;
+        ui->codeEdit->setText(ui->codeEdit->toPlainText());
+        codeEditedByUser = true;
         ui->nextBtn->setEnabled(false);
-    } else
+    } else {
+        markCurrentLine();
         ui->prevBtn->setEnabled(true);
+    }
 }
 
 void MainWindow::on_prevBtn_clicked() {
@@ -227,4 +241,6 @@ void MainWindow::on_prevBtn_clicked() {
         ui->prevBtn->setEnabled(false);
     } else
         ui->nextBtn->setEnabled(true);
+
+    markCurrentLine();
 }

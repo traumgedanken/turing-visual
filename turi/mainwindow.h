@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow {
     GraphWidget * graph = new GraphWidget(this, program);
     bool firstRun = true;
     TuriCarette carette;
-
+    QString originCodeText;
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -59,4 +59,6 @@ class MainWindow : public QMainWindow {
     int onClose();
 
     void printProgram();
+
+    void markCurrentLine();
 };

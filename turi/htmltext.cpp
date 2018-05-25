@@ -21,3 +21,17 @@ void HtmlText::markErrors(QVector<TuriParserError *> & errors) {
             text.append(strList.at(i) + newLine);
     }
 }
+
+void HtmlText::markLine(int index) {
+    QStringList strList = text.split('\n');
+    QString start = "<font style=\"background-color:" + LINE_COLOR + "\">";
+    QString end = "</font>";
+    QString newLine = "<br/>";
+    text.clear();
+    for (int i = 0; i < strList.length(); i++) {
+        if (i == index) {
+            text.append(start + strList.at(i) + end + newLine);
+        } else
+            text.append(strList.at(i) + newLine);
+    }
+}

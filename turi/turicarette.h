@@ -11,6 +11,7 @@ class TuriCarette {
     QLabel * label = nullptr;
     QVector<QString> words;
     QVector<QString> states;
+    QVector<int> lines;
     int step = 0;
     static const int caretteWidth = 800;
     static const int cellNumber = 20;
@@ -30,6 +31,8 @@ class TuriCarette {
     bool next();
 
     bool prev();
+
+    int getLine();
 
   private:
     void move(DIRECTION direction);

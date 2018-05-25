@@ -1,5 +1,6 @@
 #include "turicarette.h"
 #include <QDebug>
+#include <QFile>
 #include <QPainter>
 #include <QPicture>
 #include <QThread>
@@ -22,7 +23,7 @@ void TuriCarette::exec(TuriProgram * program) {
 
     while (true) {
         QString caretteWord =
-            word.mid(position - currentCellNumber + 1, cellNumber);
+        word.mid(position - currentCellNumber + 1, cellNumber);
         words.append(caretteWord);
         states.append(currentState);
         TuriCommand * currentCommand = nullptr;
@@ -32,6 +33,7 @@ void TuriCarette::exec(TuriProgram * program) {
                 (command->getCurrentSymbol() == getSymbol() ||
                  command->getCurrentSymbol() == ANY_SYMBOL)) {
                 currentCommand = command;
+                lines.append(i);
                 break;
             }
         }
@@ -103,7 +105,6 @@ void TuriCarette::draw() {
             : words.at(step);
     for (int i = 0; i < cellNumber; i++) {
         QString ch = currWord.at(i);
-        qDebug() << currWord.length();
         p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter,
                    ch);
     }
@@ -113,7 +114,12 @@ void TuriCarette::draw() {
                Qt::AlignCenter, currStateTmp);
     p.end();
     label->setPicture(pi);
-    // QObject().thread()->usleep(1000*1000*2);
+
+    //QFile file("yourFile.png");
+    //file.open(QIODevice::WriteOnly);
+    //if (label->pixmap() == nullptr) qDebug() << "NULL!!";
+    //label->pixmap()->save(&file, "PNG");
+    //file.close();
 }
 
 bool TuriCarette::next() {
@@ -127,3 +133,5 @@ bool TuriCarette::prev() {
     draw();
     return step != 0;
 }
+
+int TuriCarette::getLine() { return lines.at(step); }
