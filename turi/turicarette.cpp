@@ -8,6 +8,7 @@
 
 TuriCarette::TuriCarette(QString _word, QLabel * _label,
                          QString & _currentState, TuriProgram * program) {
+    currentCellNumber = (cellNumber - word.length()) / 2;
     label = _label;
     for (int i = 0; i < 100; i++)
         word.append(' ');
@@ -22,9 +23,8 @@ TuriCarette::TuriCarette(QString _word, QLabel * _label,
 void TuriCarette::exec(TuriProgram * program) {
 
     while (true) {
-        QString caretteWord =
-        word.mid(position - currentCellNumber + 1, cellNumber);
-        words.append(caretteWord);
+        positions.append(position);
+        words.append(word);
         states.append(currentState);
         TuriCommand * currentCommand = nullptr;
         for (int i = 0; i < program->count(); i++) {
@@ -99,10 +99,7 @@ void TuriCarette::draw() {
     QFont font = p.font();
     font.setPointSize(25);
     p.setFont(font);
-    QString currWord =
-        step == words.length()
-            ? word.mid(position - currentCellNumber + 1, cellNumber)
-            : words.at(step);
+    QString currWord = step == words.length() ? word.mid(position - currentCellNumber + 1, cellNumber) : words.at(step).mid(positions.at(step) - currentCellNumber + 1, cellNumber);
     for (int i = 0; i < cellNumber; i++) {
         QString ch = currWord.at(i);
         p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter,
@@ -118,6 +115,7 @@ void TuriCarette::draw() {
     //QFile file("yourFile.png");
     //file.open(QIODevice::WriteOnly);
     //if (label->pixmap() == nullptr) qDebug() << "NULL!!";
+    //save("yourFile.png");
     //label->pixmap()->save(&file, "PNG");
     //file.close();
 }
@@ -135,3 +133,16 @@ bool TuriCarette::prev() {
 }
 
 int TuriCarette::getLine() { return lines.at(step); }
+
+void TuriCarette::moveView(DIRECTION direction) {
+    if ((direction == LEFT && currentCellNumber == cellNumber) ||
+        (direction == RIGHT && currentCellNumber == 1))
+        return;
+
+    if (direction == LEFT) {
+        currentCellNumber++;
+    } else if (direction == RIGHT) {
+        currentCellNumber--;
+    }
+    draw();
+}

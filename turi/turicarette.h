@@ -12,10 +12,11 @@ class TuriCarette {
     QVector<QString> words;
     QVector<QString> states;
     QVector<int> lines;
+    QVector<int> positions;
     int step = 0;
     static const int caretteWidth = 800;
     static const int cellNumber = 20;
-    static const int currentCellNumber = cellNumber / 2 - 2;
+    int currentCellNumber = 3;
     static const int cellWidth = caretteWidth / cellNumber;
     static const int cellHeigth = 50;
 
@@ -33,6 +34,8 @@ class TuriCarette {
     bool prev();
 
     int getLine();
+
+    void moveView(DIRECTION direction);
 
   private:
     void move(DIRECTION direction);

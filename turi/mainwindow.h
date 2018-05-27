@@ -29,7 +29,7 @@ class MainWindow : public QMainWindow {
 
     void on_actionOpen_triggered();
 
-    void on_runBtn_clicked();
+    void on_setupBtn_clicked();
 
     void on_inputEdit_textChanged(const QString & arg1);
 
@@ -47,14 +47,24 @@ class MainWindow : public QMainWindow {
 
     void on_prevBtn_clicked();
 
-  private:
+    void on_runBtn_clicked();
+
+    void on_resetBtn_clicked();
+
+    void on_resetAndRunBtn_clicked();
+
+    void on_moveLeftBtn_clicked();
+
+    void on_moveRightBtn_clicked();
+
+private:
     Ui::MainWindow * ui;
 
     void printProgramTable();
 
     void printErrorsList();
 
-    void validateRunBtn();
+    void validateSetupBtn();
 
     int onClose();
 

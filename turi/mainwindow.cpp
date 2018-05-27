@@ -59,7 +59,7 @@ void MainWindow::on_codeEdit_textChanged() {
     printProgram();
     if (errors.isEmpty()) {
         printProgramTable();
-        validateRunBtn();
+        validateSetupBtn();
         ui->tabWidget->setTabText(1, "Errors");
         ui->tabWidget->removeTab(2);
         QString name = "Graph";
@@ -120,24 +120,27 @@ void MainWindow::on_actionOpen_triggered() {
     }
 }
 
-void MainWindow::on_runBtn_clicked() {
+void MainWindow::on_setupBtn_clicked() {
     QString firstState = program->getCommand(0)->getCurrentState();
     carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState,
                           program);
     markCurrentLine();
     ui->nextBtn->setEnabled(true);
+    ui->runBtn->setEnabled(true);
+    ui->resetBtn->setEnabled(true);
+    ui->resetAndRunBtn->setEnabled(true);
+    ui->moveLeftBtn->setEnabled(true);
+    ui->moveRightBtn->setEnabled(true);
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
-    validateRunBtn();
+    validateSetupBtn();
 }
 
-void MainWindow::validateRunBtn() {
-    int errorNumber = 0;
-    for (auto & error : errors) {
-        if (error->getErrorType() == ERROR) errorNumber++;
-    }
-    ui->runBtn->setEnabled(!ui->inputEdit->text().isEmpty() &&
+void MainWindow::validateSetupBtn() {
+    int errorNumber = errors.length();
+    ui->setupBtn->setEnabled(!ui->inputEdit->text().isEmpty() &&
+                             !ui->codeEdit->toPlainText().isEmpty() &&
                            errorNumber == 0);
 }
 
@@ -229,6 +232,7 @@ void MainWindow::on_nextBtn_clicked() {
         ui->codeEdit->setText(ui->codeEdit->toPlainText());
         codeEditedByUser = true;
         ui->nextBtn->setEnabled(false);
+        ui->runBtn->setEnabled(false);
     } else {
         markCurrentLine();
         ui->prevBtn->setEnabled(true);
@@ -239,8 +243,47 @@ void MainWindow::on_prevBtn_clicked() {
     bool succes = carette.prev();
     if (!succes) {
         ui->prevBtn->setEnabled(false);
-    } else
+    } else {
         ui->nextBtn->setEnabled(true);
+        ui->runBtn->setEnabled(true);
+    }
 
     markCurrentLine();
+}
+
+void MainWindow::on_runBtn_clicked()
+{
+    while (carette.next()) {}
+    ui->runBtn->setEnabled(false);
+    ui->nextBtn->setEnabled(false);
+    ui->prevBtn->setEnabled(true);
+}
+
+void MainWindow::on_resetBtn_clicked()
+{
+    QString firstState = program->getCommand(0)->getCurrentState();
+    carette = TuriCarette(carette.getResult(), ui->outputResult, firstState,
+                          program);
+    markCurrentLine();
+    ui->prevBtn->setEnabled(false);
+    ui->nextBtn->setEnabled(true);
+    ui->runBtn->setEnabled(true);
+    ui->resetBtn->setEnabled(true);
+    ui->resetAndRunBtn->setEnabled(true);
+}
+
+void MainWindow::on_resetAndRunBtn_clicked()
+{
+    on_resetBtn_clicked();
+    on_runBtn_clicked();
+}
+
+void MainWindow::on_moveLeftBtn_clicked()
+{
+    carette.moveView(LEFT);
+}
+
+void MainWindow::on_moveRightBtn_clicked()
+{
+    carette.moveView(RIGHT);
 }
