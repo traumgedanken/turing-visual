@@ -1,4 +1,4 @@
-#include "turicarette.h"
+#include "turicarriage.h"
 #include <QDebug>
 #include <QFile>
 #include <QPainter>
@@ -6,8 +6,17 @@
 #include <QThread>
 #include <exceptionmessage.h>
 
-TuriCarette::TuriCarette(QString _word, QLabel * _label,
-                         QString & _currentState, TuriProgram * program) {
+TuriCarriage::TuriCarriage(QLabel * _label) {
+    currentCellNumber = cellNumber / 2;
+    label = _label;
+    for (int i = 0; i < 100; i++)
+        word.append(' ');
+    position = 50;
+    draw();
+}
+
+TuriCarriage::TuriCarriage(QString _word, QLabel * _label,
+                           QString & _currentState, TuriProgram * program) {
     currentCellNumber = (cellNumber - word.length()) / 2;
     label = _label;
     for (int i = 0; i < 100; i++)
@@ -20,7 +29,7 @@ TuriCarette::TuriCarette(QString _word, QLabel * _label,
     draw();
 }
 
-void TuriCarette::exec(TuriProgram * program) {
+void TuriCarriage::exec(TuriProgram * program) {
 
     while (true) {
         positions.append(position);
@@ -37,7 +46,10 @@ void TuriCarette::exec(TuriProgram * program) {
                 break;
             }
         }
-        if (currentCommand == nullptr) break;
+        if (currentCommand == nullptr) {
+            throw std::exception();
+            break;
+        }
         setSymbol(currentCommand->getNextSymbol());
         setState(currentCommand->getNextState());
         move(currentCommand->getDirection());
@@ -45,7 +57,7 @@ void TuriCarette::exec(TuriProgram * program) {
     }
 }
 
-QString TuriCarette::getResult() {
+QString TuriCarriage::getResult() {
     QString result;
     int start = 0;
     int end = word.length() - 1;
@@ -58,20 +70,22 @@ QString TuriCarette::getResult() {
     return result;
 }
 
-void TuriCarette::move(DIRECTION direction) {
+void TuriCarriage::move(DIRECTION direction) {
     if (direction == LEFT) {
         position--;
     } else if (direction == RIGHT)
         position++;
 }
 
-QChar TuriCarette::getSymbol() { return word.at(position); }
+QChar TuriCarriage::getSymbol() { return word.at(position); }
 
-void TuriCarette::setSymbol(QChar symbol) { word.replace(position, 1, symbol); }
+void TuriCarriage::setSymbol(QChar symbol) {
+    word.replace(position, 1, symbol);
+}
 
-void TuriCarette::setState(QString state) { currentState = state; }
+void TuriCarriage::setState(QString state) { currentState = state; }
 
-void TuriCarette::draw() {
+void TuriCarriage::draw() {
     QString currStateTmp = step == states.length() ? "!" : states.at(step);
 
     label->clear();
@@ -88,10 +102,10 @@ void TuriCarette::draw() {
     p.drawRect((currentCellNumber - 1) * cellWidth, 0, cellWidth, cellHeigth);
 
     p.setPen(QPen(Qt::darkGray, 2));
-    p.drawLine(0, 0, caretteWidth, 0);
-    p.drawLine(0, cellHeigth, caretteWidth, cellHeigth);
+    p.drawLine(0, 0, carriageWidth, 0);
+    p.drawLine(0, cellHeigth, carriageWidth, cellHeigth);
     p.drawRect((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25);
-    for (int i = cellWidth; i < caretteWidth; i += cellWidth) {
+    for (int i = cellWidth; i < carriageWidth; i += cellWidth) {
         p.drawLine(i, 0, i, cellHeigth);
     }
 
@@ -99,7 +113,11 @@ void TuriCarette::draw() {
     QFont font = p.font();
     font.setPointSize(25);
     p.setFont(font);
-    QString currWord = step == words.length() ? word.mid(position - currentCellNumber + 1, cellNumber) : words.at(step).mid(positions.at(step) - currentCellNumber + 1, cellNumber);
+    QString currWord =
+        step == words.length()
+            ? word.mid(position - currentCellNumber + 1, cellNumber)
+            : words.at(step).mid(positions.at(step) - currentCellNumber + 1,
+                                 cellNumber);
     for (int i = 0; i < cellNumber; i++) {
         QString ch = currWord.at(i);
         p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter,
@@ -112,29 +130,29 @@ void TuriCarette::draw() {
     p.end();
     label->setPicture(pi);
 
-    //QFile file("yourFile.png");
-    //file.open(QIODevice::WriteOnly);
-    //if (label->pixmap() == nullptr) qDebug() << "NULL!!";
-    //save("yourFile.png");
-    //label->pixmap()->save(&file, "PNG");
-    //file.close();
+    // QFile file("yourFile.png");
+    // file.open(QIODevice::WriteOnly);
+    // if (label->pixmap() == nullptr) qDebug() << "NULL!!";
+    // save("yourFile.png");
+    // label->pixmap()->save(&file, "PNG");
+    // file.close();
 }
 
-bool TuriCarette::next() {
+bool TuriCarriage::next() {
     step++;
     draw();
     return step != words.length();
 }
 
-bool TuriCarette::prev() {
+bool TuriCarriage::prev() {
     step--;
     draw();
     return step != 0;
 }
 
-int TuriCarette::getLine() { return lines.at(step); }
+int TuriCarriage::getLine() { return lines.at(step); }
 
-void TuriCarette::moveView(DIRECTION direction) {
+void TuriCarriage::moveView(DIRECTION direction) {
     if ((direction == LEFT && currentCellNumber == cellNumber) ||
         (direction == RIGHT && currentCellNumber == 1))
         return;

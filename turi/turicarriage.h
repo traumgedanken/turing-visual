@@ -4,7 +4,7 @@
 #include <QString>
 #include <turiprogram.h>
 
-class TuriCarette {
+class TuriCarriage {
     QString word;
     int position;
     QString currentState;
@@ -14,16 +14,17 @@ class TuriCarette {
     QVector<int> lines;
     QVector<int> positions;
     int step = 0;
-    static const int caretteWidth = 800;
+    static const int carriageWidth = 800;
     static const int cellNumber = 20;
     int currentCellNumber = 3;
-    static const int cellWidth = caretteWidth / cellNumber;
+    static const int cellWidth = carriageWidth / cellNumber;
     static const int cellHeigth = 50;
 
   public:
-    TuriCarette() {}
-    TuriCarette(QString _word, QLabel * label, QString & _currentState,
-                TuriProgram * program);
+    TuriCarriage() {}
+    TuriCarriage(QLabel * _label);
+    TuriCarriage(QString _word, QLabel * label, QString & _currentState,
+                 TuriProgram * program);
 
     QString getResult();
 

@@ -33,11 +33,11 @@ SOURCES += \
     turiprogram.cpp \
     turiparsererror.cpp \
     exceptionmessage.cpp \
-    turicarette.cpp \
     htmltext.cpp \
     edge.cpp \
     node.cpp \
-    graphwidget.cpp
+    graphwidget.cpp \
+    turicarriage.cpp
 
 
 HEADERS += \
@@ -48,11 +48,11 @@ HEADERS += \
     turiprogram.h \
     turiparsererror.h \
     exceptionmessage.h \
-    turicarette.h \
     htmltext.h \
     edge.h \
     node.h \
-    graphwidget.h
+    graphwidget.h \
+    turicarriage.h
 
 FORMS += \
         mainwindow.ui

@@ -10,7 +10,7 @@
 #include <QThread>
 #include <htmltext.h>
 #include <iostream>
-#include <turicarette.h>
+#include <turicarriage.h>
 #include <turiparser.h>
 
 MainWindow::MainWindow(QWidget * parent)
@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget * parent)
     ui->tableWidget->resizeColumnsToContents();
     QString name = "Graph";
     ui->tabWidget->addTab(graph, name);
+    carriage = TuriCarriage(ui->outputResult);
 }
 
 MainWindow::~MainWindow() {
@@ -47,7 +48,6 @@ void MainWindow::on_codeEdit_textChanged() {
     if (codeText.isEmpty()) {
         ui->errorsList->clear();
         ui->tabWidget->setTabText(1, "Errors");
-        ui->errorTab->setEnabled(false);
         return;
     }
     if (!codeText.endsWith('\n')) codeText.append('\n');
@@ -121,16 +121,22 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_setupBtn_clicked() {
-    QString firstState = program->getCommand(0)->getCurrentState();
-    carette = TuriCarette(ui->inputEdit->text(), ui->outputResult, firstState,
-                          program);
-    markCurrentLine();
-    ui->nextBtn->setEnabled(true);
-    ui->runBtn->setEnabled(true);
-    ui->resetBtn->setEnabled(true);
-    ui->resetAndRunBtn->setEnabled(true);
-    ui->moveLeftBtn->setEnabled(true);
-    ui->moveRightBtn->setEnabled(true);
+    try {
+        QString firstState = program->getCommand(0)->getCurrentState();
+        carriage = TuriCarriage(ui->inputEdit->text(), ui->outputResult,
+                                firstState, program);
+        markCurrentLine();
+        ui->nextBtn->setEnabled(true);
+        ui->runBtn->setEnabled(true);
+        ui->resetBtn->setEnabled(true);
+        ui->resetAndRunBtn->setEnabled(true);
+        ui->moveLeftBtn->setEnabled(true);
+        ui->moveRightBtn->setEnabled(true);
+    } catch (std::exception) {
+        QMessageBox msgBox(this);
+        msgBox.setText("Error at setup");
+        msgBox.exec();
+    }
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
@@ -141,7 +147,7 @@ void MainWindow::validateSetupBtn() {
     int errorNumber = errors.length();
     ui->setupBtn->setEnabled(!ui->inputEdit->text().isEmpty() &&
                              !ui->codeEdit->toPlainText().isEmpty() &&
-                           errorNumber == 0);
+                             errorNumber == 0);
 }
 
 void MainWindow::on_actionSave_triggered() {
@@ -218,7 +224,7 @@ void MainWindow::on_actionAbout_Turi_IDE_triggered() {
 
 void MainWindow::markCurrentLine() {
     HtmlText textEditor(ui->codeEdit->toPlainText());
-    int line = carette.getLine();
+    int line = carriage.getLine();
     textEditor.markLine(line);
     codeEditedByUser = false;
     ui->codeEdit->setHtml(textEditor.getText());
@@ -226,7 +232,7 @@ void MainWindow::markCurrentLine() {
 }
 
 void MainWindow::on_nextBtn_clicked() {
-    bool succes = carette.next();
+    bool succes = carriage.next();
     if (!succes) {
         codeEditedByUser = false;
         ui->codeEdit->setText(ui->codeEdit->toPlainText());
@@ -240,7 +246,7 @@ void MainWindow::on_nextBtn_clicked() {
 }
 
 void MainWindow::on_prevBtn_clicked() {
-    bool succes = carette.prev();
+    bool succes = carriage.prev();
     if (!succes) {
         ui->prevBtn->setEnabled(false);
     } else {
@@ -251,19 +257,18 @@ void MainWindow::on_prevBtn_clicked() {
     markCurrentLine();
 }
 
-void MainWindow::on_runBtn_clicked()
-{
-    while (carette.next()) {}
+void MainWindow::on_runBtn_clicked() {
+    while (carriage.next()) {}
     ui->runBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
     ui->prevBtn->setEnabled(true);
+    ui->codeEdit->setText(ui->codeEdit->toPlainText());
 }
 
-void MainWindow::on_resetBtn_clicked()
-{
+void MainWindow::on_resetBtn_clicked() {
     QString firstState = program->getCommand(0)->getCurrentState();
-    carette = TuriCarette(carette.getResult(), ui->outputResult, firstState,
-                          program);
+    carriage = TuriCarriage(carriage.getResult(), ui->outputResult, firstState,
+                            program);
     markCurrentLine();
     ui->prevBtn->setEnabled(false);
     ui->nextBtn->setEnabled(true);
@@ -272,18 +277,11 @@ void MainWindow::on_resetBtn_clicked()
     ui->resetAndRunBtn->setEnabled(true);
 }
 
-void MainWindow::on_resetAndRunBtn_clicked()
-{
+void MainWindow::on_resetAndRunBtn_clicked() {
     on_resetBtn_clicked();
     on_runBtn_clicked();
 }
 
-void MainWindow::on_moveLeftBtn_clicked()
-{
-    carette.moveView(LEFT);
-}
+void MainWindow::on_moveLeftBtn_clicked() { carriage.moveView(LEFT); }
 
-void MainWindow::on_moveRightBtn_clicked()
-{
-    carette.moveView(RIGHT);
-}
+void MainWindow::on_moveRightBtn_clicked() { carriage.moveView(RIGHT); }

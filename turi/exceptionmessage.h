@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QString>
 
 class ExceptionMessage : public std::exception {

@@ -111,7 +111,8 @@ void Edge::paint(QPainter * painter, const QStyleOptionGraphicsItem *,
     painter->setPen(
         QPen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawLine(line);
-    painter->drawChord(sourcePoint.x(), sourcePoint.y(), line.length(), 10, (int)angle, 20);
+    painter->drawChord(sourcePoint.x(), sourcePoint.y(), line.length(), 10,
+                       (int)angle, 20);
     painter->drawText((sourcePoint + destPoint) / 2, name);
 
     // Draw the arrows

@@ -1,7 +1,9 @@
+#pragma once
+
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <graphwidget.h>
-#include <turicarette.h>
+#include <turicarriage.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
 
@@ -18,8 +20,9 @@ class MainWindow : public QMainWindow {
     bool codeEditedByUser = true;
     GraphWidget * graph = new GraphWidget(this, program);
     bool firstRun = true;
-    TuriCarette carette;
+    TuriCarriage carriage;
     QString originCodeText;
+
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -57,7 +60,7 @@ class MainWindow : public QMainWindow {
 
     void on_moveRightBtn_clicked();
 
-private:
+  private:
     Ui::MainWindow * ui;
 
     void printProgramTable();

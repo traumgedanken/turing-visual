@@ -1,7 +1,6 @@
 #pragma once
 
 #include "turiparsererror.h"
-
 #include <QVector>
 #include <turicommand.h>
 
