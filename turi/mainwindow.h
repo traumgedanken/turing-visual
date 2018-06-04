@@ -6,6 +6,7 @@
 #include <turicarriage.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
+#include "client.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,7 @@ class MainWindow : public QMainWindow {
     bool firstRun = true;
     TuriCarriage carriage;
     QString originCodeText;
-
+    Client * client = nullptr;
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();

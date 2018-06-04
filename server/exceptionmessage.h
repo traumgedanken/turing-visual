@@ -1,0 +1,12 @@
+#pragma once
+
+#include <QString>
+
+class ExceptionMessage : public std::exception {
+    QString errorMessage;
+
+  public:
+    ExceptionMessage(QString _errorMessage);
+
+    QString getErrorMessage();
+};

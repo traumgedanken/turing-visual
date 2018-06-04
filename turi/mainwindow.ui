@@ -17,9 +17,9 @@
    <widget class="QTextEdit" name="codeEdit">
     <property name="geometry">
      <rect>
-      <x>9</x>
+      <x>28</x>
       <y>9</y>
-      <width>400</width>
+      <width>381</width>
       <height>451</height>
      </rect>
     </property>
@@ -250,6 +250,19 @@
       <width>400</width>
       <height>26</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lineCountLabel">
+    <property name="geometry">
+     <rect>
+      <x>4</x>
+      <y>11</y>
+      <width>21</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 CONFIG += c++11
 
@@ -37,7 +37,10 @@ SOURCES += \
     edge.cpp \
     node.cpp \
     graphwidget.cpp \
-    turicarriage.cpp
+    turicarriage.cpp \
+    client.cpp \
+    request.cpp \
+    response.cpp
 
 
 HEADERS += \
@@ -52,7 +55,10 @@ HEADERS += \
     edge.h \
     node.h \
     graphwidget.h \
-    turicarriage.h
+    turicarriage.h \
+    client.h \
+    request.h \
+    response.h
 
 FORMS += \
         mainwindow.ui
