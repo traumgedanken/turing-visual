@@ -13,6 +13,7 @@ class Response {
     Response(int _status, TuriProgram * _program);
     QString serialize();
     static Response deserialize(QString source);
+    void clean();
 };
 
 #endif // RESPONSE_H

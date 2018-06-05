@@ -21,6 +21,7 @@ class Request {
     Request(FunctionName _functionName, QString _code, TuriProgram * _program = nullptr);
     QString serialize();
     static Request deserialize(QString _source);
+    void clean();
 };
 
 #endif // REQUEST_H

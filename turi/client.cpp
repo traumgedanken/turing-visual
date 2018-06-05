@@ -34,7 +34,6 @@ void Client::onReadyRead() {
 }
 
 void Client::onDisconnected() {
-    QTcpSocket * clientSocket = static_cast<QTcpSocket *>(sender());
     if (request != nullptr) {
         delete request;
         request = nullptr;
@@ -43,6 +42,5 @@ void Client::onDisconnected() {
 
 Response Client::getResponse() {
     Response res = Response::deserialize(answer);
-    std::cout << "answer: " << answer.toStdString() << std::endl;
     return res;
 }

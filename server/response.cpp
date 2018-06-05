@@ -60,10 +60,10 @@ Response Response::deserialize(QString source) {
     QJsonObject responseObj = doc.object();
 
     int _status = responseObj.value("status").toInt();
-    TuriProgram * _program = new TuriProgram();
+    TuriProgram * _program = nullptr;
     if (!responseObj.value("program").isNull()) {
         QJsonArray programArr = responseObj.value("program").toArray();
-        TuriProgram * _program = new TuriProgram();
+        _program = new TuriProgram();
         for (auto value : programArr) {
             QJsonObject commandObj = value.toObject();
             _program->addCommand(new TuriCommand(
@@ -85,4 +85,8 @@ Response Response::deserialize(QString source) {
     }
 
     return Response(_status, _program);
+}
+
+void Response::clean() {
+    if (program != nullptr) delete program;
 }

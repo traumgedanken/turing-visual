@@ -48,7 +48,9 @@ QString Server::fromRequest(Request & req) {
         TuriParser parser(req.code);
         TuriProgram * program = parser.parseTuriProgram();
         Response res(0, program);
-        return res.serialize();
+        QString result = res.serialize();
+        res.clean();
+        return result;
     }
     default: { return ""; }
     }

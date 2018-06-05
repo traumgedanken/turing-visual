@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget * parent)
     QString name = "Graph";
     ui->tabWidget->addTab(graph, name);
     carriage = TuriCarriage(ui->outputResult);
+    setLineCounter();
 }
 
 MainWindow::~MainWindow() {
@@ -51,16 +52,12 @@ void MainWindow::on_codeEdit_textChanged() {
         return;
     }
     if (!codeText.endsWith('\n')) codeText.append('\n');
-    //TuriParser parser(codeText);
     Request req(FN_PARSE_PROGRAM, codeText);
     client = new Client(req, this);
     Response res = client->getResponse();
-    std::cout << "status: " << res.status << std::endl;
     delete client;
     if (program != nullptr) delete program;
-    //program = parser.parseTuriProgram();
     program = res.program;
-    std::cout << "length: " << program->count() << std::endl;
     errors = program->getErrors();
     printErrorsList();
     printProgram();
@@ -240,8 +237,6 @@ void MainWindow::markCurrentLine() {
 
 void MainWindow::on_nextBtn_clicked() {
     bool succes = carriage.next();
-    std::string lol = ui->outputResult->pixmap() == nullptr ? "null" : "not null";
-    std::cout << lol << std::endl;
     if (!succes) {
         codeEditedByUser = false;
         ui->codeEdit->setText(ui->codeEdit->toPlainText());
@@ -294,3 +289,13 @@ void MainWindow::on_resetAndRunBtn_clicked() {
 void MainWindow::on_moveLeftBtn_clicked() { carriage.moveView(LEFT); }
 
 void MainWindow::on_moveRightBtn_clicked() { carriage.moveView(RIGHT); }
+
+void MainWindow::setLineCounter() {
+    QString res;
+    int lineNumber = 30;
+    for (int i = 1; i <= lineNumber; i++) {
+        if (i < 10) res += " ";
+        res += QString::number(i) + "\n";
+    }
+    ui->lineCountLabel->setText(res);
+}

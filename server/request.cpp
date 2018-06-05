@@ -41,3 +41,7 @@ Request Request::deserialize(QString source) {
     }
     return Request(_functionName, _code, _program);
 }
+
+void Request::clean() {
+    if (program != nullptr) delete program;
+}

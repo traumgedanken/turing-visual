@@ -62,15 +62,10 @@ Response Response::deserialize(QString source) {
     int _status = responseObj.value("status").toInt();
     TuriProgram * _program = nullptr;
     if (!responseObj.value("program").isNull()) {
-
-        _program = new TuriProgram();
         QJsonArray programArr = responseObj.value("program").toArray();
+        _program = new TuriProgram();
         for (auto value : programArr) {
-            std::cout << "lol" << std::endl;
-
             QJsonObject commandObj = value.toObject();
-            std::cout << "length: " << _program->count() << std::endl;
-
             _program->addCommand(new TuriCommand(
                                     commandObj.value("currentState").toString(),
                                     commandObj.value("nextState").toString(),
@@ -90,4 +85,8 @@ Response Response::deserialize(QString source) {
     }
 
     return Response(_status, _program);
+}
+
+void Response::clean() {
+    if (program != nullptr) delete program;
 }

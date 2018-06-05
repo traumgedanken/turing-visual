@@ -20,7 +20,7 @@
       <x>28</x>
       <y>9</y>
       <width>381</width>
-      <height>451</height>
+      <height>453</height>
      </rect>
     </property>
     <property name="font">
@@ -256,10 +256,52 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>11</y>
+      <y>13</y>
       <width>21</width>
       <height>451</height>
      </rect>
+    </property>
+    <property name="palette">
+     <palette>
+      <active>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>85</red>
+          <green>87</green>
+          <blue>83</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </active>
+      <inactive>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>85</red>
+          <green>87</green>
+          <blue>83</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </inactive>
+      <disabled>
+       <colorrole role="WindowText">
+        <brush brushstyle="SolidPattern">
+         <color alpha="96">
+          <red>164</red>
+          <green>166</green>
+          <blue>168</blue>
+         </color>
+        </brush>
+       </colorrole>
+      </disabled>
+     </palette>
+    </property>
+    <property name="font">
+     <font>
+      <family>FreeMono</family>
+     </font>
     </property>
     <property name="text">
      <string/>

@@ -75,4 +75,6 @@ class MainWindow : public QMainWindow {
     void printProgram();
 
     void markCurrentLine();
+
+    void setLineCounter();
 };
