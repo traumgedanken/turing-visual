@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QLabel>
 #include <QString>
 #include <turiprogram.h>
+#include <QLabel>
 
 class TuriCarriage {
     QString word;
@@ -37,6 +37,16 @@ class TuriCarriage {
     int getLine();
 
     void moveView(DIRECTION direction);
+
+    QVector<QString> getWords();
+    QVector<QString> getStates();
+    QVector<int> getLines();
+    QVector<int> getPositions();
+
+    void setWords(QVector<QString> list);
+    void setStates(QVector<QString> list);
+    void setLines(QVector<int> list);
+    void setPositions(QVector<int> list);
 
   private:
     void move(DIRECTION direction);

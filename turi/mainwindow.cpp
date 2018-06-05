@@ -129,6 +129,10 @@ void MainWindow::on_setupBtn_clicked() {
         QString firstState = program->getCommand(0)->getCurrentState();
         carriage = TuriCarriage(ui->inputEdit->text(), ui->outputResult,
                                 firstState, program);
+        Request req(FN_GET_CARRIAGE, firstState, program);
+        client = new Client(req, this);
+        //Response res = client->getResponse();
+        delete client;
         markCurrentLine();
         ui->nextBtn->setEnabled(true);
         ui->runBtn->setEnabled(true);

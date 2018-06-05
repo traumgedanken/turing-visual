@@ -8,7 +8,8 @@
 enum FunctionName {
     FN_NONE,
     // supported remote functions
-    FN_PARSE_PROGRAM
+    FN_PARSE_PROGRAM,
+    FN_GET_CARRIAGE
 };
 
 class Request {

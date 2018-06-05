@@ -9,9 +9,10 @@
 #include <QTextStream>
 #include <iostream>
 
-Response::Response(int _status, TuriProgram * _program) {
+Response::Response(int _status, TuriProgram * _program, TuriCarriage *_carriage) {
     status = _status;
     program = _program;
+    carriage = _carriage;
 }
 
 QString Response::serialize() {

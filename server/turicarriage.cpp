@@ -87,6 +87,7 @@ void TuriCarriage::setSymbol(QChar symbol) {
 void TuriCarriage::setState(QString state) { currentState = state; }
 
 void TuriCarriage::draw() {
+    if (label == nullptr) return;
     QString currStateTmp = step == states.length() ? "!" : states.at(step);
 
     label->clear();
@@ -158,3 +159,13 @@ void TuriCarriage::moveView(DIRECTION direction) {
     }
     draw();
 }
+
+QVector<QString> TuriCarriage::getWords() { return words; }
+QVector<QString> TuriCarriage::getStates() { return states; }
+QVector<int> TuriCarriage::getLines() { return lines; }
+QVector<int> TuriCarriage::getPositions() { return positions; }
+
+void TuriCarriage::setWords(QVector<QString> list) { words = list; }
+void TuriCarriage::setStates(QVector<QString> list) { states = list; }
+void TuriCarriage::setLines(QVector<int> list) { lines = list; }
+void TuriCarriage::setPositions(QVector<int> list) { positions = list; }
