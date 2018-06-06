@@ -128,7 +128,6 @@ void GraphWidget::keyPressEvent(QKeyEvent * event) {
     case Qt::Key_Plus: zoomIn(); break;
     case Qt::Key_Minus: zoomOut(); break;
     case Qt::Key_Space:
-    case Qt::Key_Enter: shuffle(); break;
     default: QGraphicsView::keyPressEvent(event);
     }
 }
@@ -161,11 +160,6 @@ void GraphWidget::wheelEvent(QWheelEvent * event) {
 }
 #endif
 
-void GraphWidget::drawBackground(QPainter * painter, const QRectF & rect) {
-    Q_UNUSED(rect);
-
-}
-
 void GraphWidget::scaleView(qreal scaleFactor) {
     qreal factor = transform()
                        .scale(scaleFactor, scaleFactor)
@@ -174,15 +168,6 @@ void GraphWidget::scaleView(qreal scaleFactor) {
     if (factor < 0.07 || factor > 100) return;
 
     scale(scaleFactor, scaleFactor);
-}
-
-void GraphWidget::shuffle() {
-    int i = 0;
-    foreach (QGraphicsItem * item, scene()->items()) {
-        if (qgraphicsitem_cast<Node *>(item))
-            item->setPos(-150 + i * 20, -150 + i * 20);
-        i++;
-    }
 }
 
 void GraphWidget::zoomIn() { scaleView(qreal(1.2)); }

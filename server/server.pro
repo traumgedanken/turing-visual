@@ -1,3 +1,4 @@
+QT -= gui
 QT += core network
 
 CONFIG += c++11 console

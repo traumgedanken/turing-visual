@@ -1,8 +1,6 @@
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
 #include "request.h"
-#include <QObject>
 #include <QTcpServer>
 #include "turicarriage.h"
 
@@ -10,6 +8,8 @@ class Server : public QObject {
     QTcpServer * tcpServer;
     Q_OBJECT
     QVector<TuriCarriage *> carriages;
+
+    static const int MAX_CAPACITY = 10000;
 
   public:
     explicit Server(QObject * parent = nullptr);
@@ -23,5 +23,3 @@ class Server : public QObject {
     void onReadyRead();
     void onClientDisconnected();
 };
-
-#endif // SERVER_H

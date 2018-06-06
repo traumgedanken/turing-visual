@@ -14,7 +14,6 @@ class GraphWidget : public QGraphicsView {
     void itemMoved();
 
   public slots:
-    void shuffle();
     void zoomIn();
     void zoomOut();
 
@@ -24,8 +23,6 @@ class GraphWidget : public QGraphicsView {
 #if QT_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent * event) override;
 #endif
-    void drawBackground(QPainter * painter, const QRectF & rect) override;
-
     void scaleView(qreal scaleFactor);
 
   private:

@@ -1,9 +1,6 @@
-#ifndef RESPONSE_H
-#define RESPONSE_H
+#pragma once
 
 #include "turiprogram.h"
-#include <QVector>
-#include "turicarriage.h"
 
 class Response {
   public:
@@ -15,9 +12,7 @@ class Response {
     int line = -1;
 
     Response() {}
-    Response(int _status, QString _word, QString _state, int _id, int _line, TuriProgram * _program = nullptr);
+    Response(int _status, QString _word = "", QString _state = "", int _id = -1, int _line = -1, TuriProgram * _program = nullptr);
     QString serialize();
     static Response deserialize(QString source);
 };
-
-#endif // RESPONSE_H

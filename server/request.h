@@ -1,9 +1,6 @@
-#ifndef REQUEST_H
-#define REQUEST_H
+#pragma once
 
 #include "turiprogram.h"
-
-#include <QString>
 
 enum FunctionName {
     FN_NONE,
@@ -14,7 +11,8 @@ enum FunctionName {
     FN_CARRIAGE_NEXT,
     FN_CARRIAGE_LEFT,
     FN_CARRIAGE_RIGHT,
-    FN_CARRIAGE_WORD
+    FN_CARRIAGE_WORD,
+    FN_CARRIAGE_RUN
 };
 
 class Request {
@@ -25,9 +23,7 @@ class Request {
     int id = -1;
 
     Request() {}
-    Request(FunctionName _functionName, int _id, QString _code, TuriProgram * _program = nullptr);
+    Request(FunctionName _functionName, int _id = -1, QString _code = "", TuriProgram * _program = nullptr);
     QString serialize();
     static Request deserialize(QString _source);
 };
-
-#endif // REQUEST_H

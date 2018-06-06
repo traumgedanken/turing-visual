@@ -1,5 +1,4 @@
-#ifndef CLIENT_H
-#define CLIENT_H
+#pragma once
 
 #include <request.h>
 #include <response.h>
@@ -20,5 +19,3 @@ class Client : public QObject {
     void onReadyRead();
     void onDisconnected();
 };
-
-#endif // CLIENT_H

@@ -1,7 +1,6 @@
 #include "turiparser.h"
-#include <defines.h>
-#include <exceptionmessage.h>
-#include <iostream>
+#include "defines.h"
+#include "exceptionmessage.h"
 
 TuriParser::TuriParser(QString & _code) { code = _code; }
 

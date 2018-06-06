@@ -1,13 +1,7 @@
 #include "response.h"
-#include <QByteArray>
-#include <QFile>
-#include <QIODevice>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QTextCodec>
-#include <QTextStream>
-#include <iostream>
 
 Response::Response(int _status, QString _word, QString _state, int _id, int _line, TuriProgram * _program) {
     status = _status;

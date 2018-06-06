@@ -1,8 +1,8 @@
 #pragma once
 
 #include "turiparsererror.h"
-#include <QVector>
-#include <turicommand.h>
+//#include <QVector>
+#include "turicommand.h"
 
 class TuriProgram {
     QVector<TuriCommand *> program;
@@ -20,8 +20,6 @@ class TuriProgram {
     int count();
 
     QVector<TuriParserError *> getErrors();
-
-    QString toJson();
 
     void setErrorsList(QVector<TuriParserError *> &_errors);
 

@@ -8,10 +8,30 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QThread>
-#include <htmltext.h>
+#include "htmltext.h"
 #include <iostream>
 #include <turiparser.h>
 #include "turicarriagepainter.h"
+#include "defines.h"
+
+#define PROCESS_ERROR_RESPONSE \
+    if (res.status == NETWORK_ERROR_CODE) { \
+        QMessageBox::critical(this, "ERROR", res.word); \
+        close(); \
+    }
+
+#define TRY_GET_RESPONSE(REQUEST) \
+    Response res; \
+    try { \
+        client = new Client(REQUEST, this); \
+        res = client->getResponse(); \
+        delete client; \
+    } catch (std::exception) { \
+        QMessageBox::critical(this, "ERROR", "Error connecting to server"); \
+        close(); \
+        return; \
+    } \
+    PROCESS_ERROR_RESPONSE
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -21,6 +41,9 @@ MainWindow::MainWindow(QWidget * parent)
     QString name = "Graph";
     ui->tabWidget->addTab(graph, name);
     setLineCounter();
+    show();
+    Request req(FN_NONE);
+    TRY_GET_RESPONSE(req);
 }
 
 MainWindow::~MainWindow() {
@@ -52,9 +75,7 @@ void MainWindow::on_codeEdit_textChanged() {
     }
     if (!codeText.endsWith('\n')) codeText.append('\n');
     Request req(FN_PARSE_PROGRAM, -1, codeText);
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
+    TRY_GET_RESPONSE(req)
     if (program != nullptr) delete program;
     program = res.program;
     errors = program->getErrors();
@@ -125,24 +146,16 @@ void MainWindow::on_actionOpen_triggered() {
 
 void MainWindow::on_setupBtn_clicked() {
     Request req(FN_CARRIAGE_CREATE, -1, ui->inputEdit->text(), program);
-    client = new Client(req, this);
-    Response res = client->getResponse();
+    TRY_GET_RESPONSE(req)
     carriageIndex = res.id;
-    delete client;
-    try {
-        TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
-        markCurrentLine(res.line);
-        ui->nextBtn->setEnabled(true);
-        ui->runBtn->setEnabled(true);
-        ui->resetBtn->setEnabled(true);
-        ui->resetAndRunBtn->setEnabled(true);
-        ui->moveLeftBtn->setEnabled(true);
-        ui->moveRightBtn->setEnabled(true);
-    } catch (std::exception) {
-        QMessageBox msgBox(this);
-        msgBox.setText("Error at setup");
-        msgBox.exec();
-    }
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
+    markCurrentLine(res.line);
+    ui->nextBtn->setEnabled(true);
+    ui->runBtn->setEnabled(true);
+    ui->resetBtn->setEnabled(true);
+    ui->resetAndRunBtn->setEnabled(true);
+    ui->moveLeftBtn->setEnabled(true);
+    ui->moveRightBtn->setEnabled(true);
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
@@ -151,9 +164,17 @@ void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
 
 void MainWindow::validateSetupBtn() {
     int errorNumber = errors.length();
-    ui->setupBtn->setEnabled(!ui->inputEdit->text().isEmpty() &&
-                             !ui->codeEdit->toPlainText().isEmpty() &&
-                             errorNumber == 0);
+    bool validity = !ui->inputEdit->text().isEmpty() &&
+            !ui->codeEdit->toPlainText().isEmpty() &&
+            errorNumber == 0;
+    ui->setupBtn->setEnabled(validity);
+    if (!validity) {
+        ui->prevBtn->setEnabled(validity);
+        ui->nextBtn->setEnabled(validity);
+        ui->runBtn->setEnabled(validity);
+        ui->resetBtn->setEnabled(validity);
+        ui->resetAndRunBtn->setEnabled(validity);
+    }
 }
 
 void MainWindow::on_actionSave_triggered() {
@@ -238,10 +259,8 @@ void MainWindow::markCurrentLine(int line) {
 
 void MainWindow::on_nextBtn_clicked() {
     Request req(FN_CARRIAGE_NEXT, carriageIndex, "");
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
-    bool succes = res.status == 0;
+    TRY_GET_RESPONSE(req)
+    bool succes = res.status == NETWORK_TRUE;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     if (!succes) {
         codeEditedByUser = false;
@@ -257,10 +276,8 @@ void MainWindow::on_nextBtn_clicked() {
 
 void MainWindow::on_prevBtn_clicked() {
     Request req(FN_CARRIAGE_PREV, carriageIndex, "");
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
-    bool succes = res.status == 0;
+    TRY_GET_RESPONSE(req)
+    bool succes = res.status == NETWORK_TRUE;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     if (!succes) {
         ui->prevBtn->setEnabled(false);
@@ -272,13 +289,8 @@ void MainWindow::on_prevBtn_clicked() {
 }
 
 void MainWindow::on_runBtn_clicked() {
-    Response res;
-    Request req(FN_CARRIAGE_NEXT, carriageIndex, "");
-    do {
-        client = new Client(req, this);
-        res = client->getResponse();
-        delete client;
-    } while (res.status == 0);
+    Request req(FN_CARRIAGE_RUN, carriageIndex, "");
+    TRY_GET_RESPONSE(req);
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     ui->runBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
@@ -288,9 +300,7 @@ void MainWindow::on_runBtn_clicked() {
 
 void MainWindow::on_resetBtn_clicked() {
     Request req(FN_CARRIAGE_WORD, carriageIndex, "");
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
+    TRY_GET_RESPONSE(req)
     QString newWord = res.word;
     req = Request(FN_CARRIAGE_CREATE, -1, newWord, program);
     client = new Client(req, this);
@@ -313,18 +323,13 @@ void MainWindow::on_resetAndRunBtn_clicked() {
 
 void MainWindow::on_moveLeftBtn_clicked() {
     Request req(FN_CARRIAGE_LEFT, carriageIndex, "");
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
+    TRY_GET_RESPONSE(req)
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
-
 }
 
 void MainWindow::on_moveRightBtn_clicked() {
     Request req(FN_CARRIAGE_RIGHT, carriageIndex, "");
-    client = new Client(req, this);
-    Response res = client->getResponse();
-    delete client;
+    TRY_GET_RESPONSE(req)
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
 
 }

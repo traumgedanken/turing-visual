@@ -1,12 +1,7 @@
 #include "request.h"
-#include <QByteArray>
-#include <QFile>
-#include <QIODevice>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QTextCodec>
-#include <QTextStream>
 #include <iostream>
 
 Request::Request(FunctionName _functionName, int _id, QString _code, TuriProgram *_program) {

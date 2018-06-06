@@ -5,8 +5,15 @@
 #include <QTcpSocket>
 #include <iostream>
 #include "turiparser.h"
+#include "defines.h"
 
 using namespace std;
+
+#define RETURN_INVALID_INDEX_ERROR \
+    if (req.id < 0 || req.id >= carriages.length()) { \
+        Response res(NETWORK_ERROR_CODE, "Invalid index"); \
+        return res.serialize(); \
+    } \
 
 Server::Server(QObject * parent) : QObject(parent) {
     tcpServer = new QTcpServer(this);
@@ -44,18 +51,26 @@ void Server::onReadyRead() {
 
 QString Server::fromRequest(Request & req) {
     switch (req.functionName) {
+    case FN_NONE: {
+        Response res(NETWORK_TRUE);
+        return res.serialize();
+    }
     case FN_PARSE_PROGRAM: {
         TuriParser parser(req.code);
         TuriProgram * program = parser.parseTuriProgram();
-        Response res(0, "", "", -1, -1, program);
+        Response res(NETWORK_TRUE, "", "", -1, -1, program);
         QString result = res.serialize();
         delete res.program;
         return result;
     }
     case FN_CARRIAGE_CREATE: {
+        if (carriages.length() > MAX_CAPACITY) {
+            Response res(NETWORK_ERROR_CODE, "Server needs to be rebooted");
+            return res.serialize();
+        }
         TuriCarriage * carriage = new TuriCarriage(req.code, req.program);
         carriages.append(carriage);
-        Response res(0,
+        Response res(NETWORK_TRUE,
                      carriage->getCurrentWord(),
                      carriage->getCurrentState(),
                      carriages.length() - 1,
@@ -63,9 +78,10 @@ QString Server::fromRequest(Request & req) {
         return res.serialize();
     }
     case FN_CARRIAGE_PREV: {
+        RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->prev();
-        Response res(result ? 0 : 1,
+        Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
                      carriage->getCurrentWord(),
                      carriage->getCurrentState(),
                      carriage->getPosition(),
@@ -73,9 +89,10 @@ QString Server::fromRequest(Request & req) {
         return res.serialize();
     }
     case FN_CARRIAGE_NEXT: {
+        RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->next();
-        Response res(result ? 0 : 1,
+        Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
                      carriage->getCurrentWord(),
                      carriage->getCurrentState(),
                      carriage->getPosition(),
@@ -83,30 +100,44 @@ QString Server::fromRequest(Request & req) {
         return res.serialize();
     }
     case FN_CARRIAGE_LEFT: {
+        RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         carriage->moveView(LEFT);
-        Response res(0,
+        Response res(NETWORK_TRUE,
                      carriage->getCurrentWord(),
                      carriage->getCurrentState(),
                      carriage->getPosition(), -1);
         return res.serialize();
     }
     case FN_CARRIAGE_RIGHT: {
+        RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         carriage->moveView(RIGHT);
-        Response res(0,
+        Response res(NETWORK_TRUE,
                      carriage->getCurrentWord(),
                      carriage->getCurrentState(),
                      carriage->getPosition(), -1);
         return res.serialize();
     }
     case FN_CARRIAGE_WORD: {
+        RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
-        Response res(0, carriage->getResult(), "", -1, -1);
+        Response res(NETWORK_TRUE, carriage->getResult());
+        return res.serialize();
+    }
+    case FN_CARRIAGE_RUN: {
+        RETURN_INVALID_INDEX_ERROR
+        TuriCarriage * carriage = carriages[req.id];
+        while (carriage->next()) {}
+        Response res(NETWORK_TRUE,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriage->getPosition(),
+                     carriage->getCurrentLine());
         return res.serialize();
     }
     default: {
-        Response res(-1, "", "", -1, -1);
+        Response res(NETWORK_ERROR_CODE, "Unrecognized command");
         return res.serialize();
     }
     }

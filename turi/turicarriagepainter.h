@@ -1,5 +1,4 @@
-#ifndef TURICARRIAGEPAINTER_H
-#define TURICARRIAGEPAINTER_H
+#pragma once
 
 #include <QLabel>
 #include <QString>
@@ -13,5 +12,3 @@ class TuriCarriagePainter
 public:
     static void draw(QLabel * label, QString & word, QString & state, int position);
 };
-
-#endif // TURICARRIAGEPAINTER_H

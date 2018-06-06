@@ -1,11 +1,4 @@
 #include "turicarriage.h"
-#include <QDebug>
-#include <QFile>
-#include <QPainter>
-#include <QPicture>
-#include <QThread>
-#include <exceptionmessage.h>
-#include <iostream>
 
 TuriCarriage::TuriCarriage() {
     for (int i = 0; i < 100; i++)
@@ -104,7 +97,6 @@ void TuriCarriage::moveView(DIRECTION direction) {
 
 QString TuriCarriage::getCurrentState() { return step == states.length() ? "!" : states.at(step); }
 QString TuriCarriage::getCurrentWord() {
-    std::cout << currentCellNumber << std::endl;
     return step == words.length()
             ? word.mid(position - currentCellNumber + 1, cellNumber)
             : words.at(step).mid(positions.at(step) - currentCellNumber + 1,

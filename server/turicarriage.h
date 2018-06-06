@@ -1,14 +1,11 @@
 #pragma once
 
-#include <QString>
 #include <turiprogram.h>
-#include <QLabel>
 
 class TuriCarriage {
     QString word;
     int position;
     QString currentState;
-    QLabel * label = nullptr;
     QVector<QString> words;
     QVector<QString> states;
     QVector<int> lines;
