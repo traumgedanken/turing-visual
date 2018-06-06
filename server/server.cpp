@@ -47,12 +47,68 @@ QString Server::fromRequest(Request & req) {
     case FN_PARSE_PROGRAM: {
         TuriParser parser(req.code);
         TuriProgram * program = parser.parseTuriProgram();
-        Response res(0, program);
+        Response res(0, "", "", -1, -1, program);
         QString result = res.serialize();
-        res.clean();
+        delete res.program;
         return result;
     }
-    default: { return ""; }
+    case FN_CARRIAGE_CREATE: {
+        TuriCarriage * carriage = new TuriCarriage(req.code, req.program);
+        carriages.append(carriage);
+        Response res(0,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriages.length() - 1,
+                     carriage->getCurrentLine());
+        return res.serialize();
+    }
+    case FN_CARRIAGE_PREV: {
+        TuriCarriage * carriage = carriages[req.id];
+        bool result = carriage->prev();
+        Response res(result ? 0 : 1,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriage->getPosition(),
+                     carriage->getCurrentLine());
+        return res.serialize();
+    }
+    case FN_CARRIAGE_NEXT: {
+        TuriCarriage * carriage = carriages[req.id];
+        bool result = carriage->next();
+        Response res(result ? 0 : 1,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriage->getPosition(),
+                     carriage->getCurrentLine());
+        return res.serialize();
+    }
+    case FN_CARRIAGE_LEFT: {
+        TuriCarriage * carriage = carriages[req.id];
+        carriage->moveView(LEFT);
+        Response res(0,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriage->getPosition(), -1);
+        return res.serialize();
+    }
+    case FN_CARRIAGE_RIGHT: {
+        TuriCarriage * carriage = carriages[req.id];
+        carriage->moveView(RIGHT);
+        Response res(0,
+                     carriage->getCurrentWord(),
+                     carriage->getCurrentState(),
+                     carriage->getPosition(), -1);
+        return res.serialize();
+    }
+    case FN_CARRIAGE_WORD: {
+        TuriCarriage * carriage = carriages[req.id];
+        Response res(0, carriage->getResult(), "", -1, -1);
+        return res.serialize();
+    }
+    default: {
+        Response res(-1, "", "", -1, -1);
+        return res.serialize();
+    }
     }
 }
 

@@ -8,7 +8,7 @@ using namespace std;
 Client::Client(Request & req, QObject * parent, QString hostAdress, int port)
     : QObject(parent) {
     if (parent == nullptr) return;
-    request = new Request(req.functionName, req.code);
+    request = new Request(req.functionName, req.id, req.code, req.program);
     QTcpSocket * client = new QTcpSocket(this);
     connect(client, SIGNAL(connected()), this, SLOT(onConnected()));
     connect(client, SIGNAL(readyRead()), this, SLOT(onReadyRead()));

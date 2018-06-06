@@ -9,7 +9,12 @@ enum FunctionName {
     FN_NONE,
     // supported remote functions
     FN_PARSE_PROGRAM,
-    FN_GET_CARRIAGE
+    FN_CARRIAGE_CREATE,
+    FN_CARRIAGE_PREV,
+    FN_CARRIAGE_NEXT,
+    FN_CARRIAGE_LEFT,
+    FN_CARRIAGE_RIGHT,
+    FN_CARRIAGE_WORD
 };
 
 class Request {
@@ -17,12 +22,12 @@ class Request {
     FunctionName functionName = FN_NONE;
     QString code = "";
     TuriProgram * program = nullptr;
+    int id = -1;
 
     Request() {}
-    Request(FunctionName _functionName, QString _code, TuriProgram * _program = nullptr);
+    Request(FunctionName _functionName, int _id, QString _code, TuriProgram * _program = nullptr);
     QString serialize();
     static Request deserialize(QString _source);
-    void clean();
 };
 
 #endif // REQUEST_H

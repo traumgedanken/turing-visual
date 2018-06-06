@@ -10,8 +10,8 @@
 #include <QThread>
 #include <htmltext.h>
 #include <iostream>
-#include <turicarriage.h>
 #include <turiparser.h>
+#include "turicarriagepainter.h"
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget * parent)
     ui->tableWidget->resizeColumnsToContents();
     QString name = "Graph";
     ui->tabWidget->addTab(graph, name);
-    carriage = TuriCarriage(ui->outputResult);
     setLineCounter();
 }
 
@@ -52,7 +51,7 @@ void MainWindow::on_codeEdit_textChanged() {
         return;
     }
     if (!codeText.endsWith('\n')) codeText.append('\n');
-    Request req(FN_PARSE_PROGRAM, codeText);
+    Request req(FN_PARSE_PROGRAM, -1, codeText);
     client = new Client(req, this);
     Response res = client->getResponse();
     delete client;
@@ -61,9 +60,9 @@ void MainWindow::on_codeEdit_textChanged() {
     errors = program->getErrors();
     printErrorsList();
     printProgram();
+    validateSetupBtn();
     if (errors.isEmpty()) {
         printProgramTable();
-        validateSetupBtn();
         ui->tabWidget->setTabText(1, "Errors");
         ui->tabWidget->removeTab(2);
         QString name = "Graph";
@@ -125,15 +124,14 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_setupBtn_clicked() {
+    Request req(FN_CARRIAGE_CREATE, -1, ui->inputEdit->text(), program);
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    carriageIndex = res.id;
+    delete client;
     try {
-        QString firstState = program->getCommand(0)->getCurrentState();
-        carriage = TuriCarriage(ui->inputEdit->text(), ui->outputResult,
-                                firstState, program);
-        Request req(FN_GET_CARRIAGE, firstState, program);
-        client = new Client(req, this);
-        //Response res = client->getResponse();
-        delete client;
-        markCurrentLine();
+        TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
+        markCurrentLine(res.line);
         ui->nextBtn->setEnabled(true);
         ui->runBtn->setEnabled(true);
         ui->resetBtn->setEnabled(true);
@@ -230,9 +228,8 @@ void MainWindow::on_actionAbout_Turi_IDE_triggered() {
     //
 }
 
-void MainWindow::markCurrentLine() {
+void MainWindow::markCurrentLine(int line) {
     HtmlText textEditor(ui->codeEdit->toPlainText());
-    int line = carriage.getLine();
     textEditor.markLine(line);
     codeEditedByUser = false;
     ui->codeEdit->setHtml(textEditor.getText());
@@ -240,7 +237,12 @@ void MainWindow::markCurrentLine() {
 }
 
 void MainWindow::on_nextBtn_clicked() {
-    bool succes = carriage.next();
+    Request req(FN_CARRIAGE_NEXT, carriageIndex, "");
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    delete client;
+    bool succes = res.status == 0;
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     if (!succes) {
         codeEditedByUser = false;
         ui->codeEdit->setText(ui->codeEdit->toPlainText());
@@ -248,25 +250,36 @@ void MainWindow::on_nextBtn_clicked() {
         ui->nextBtn->setEnabled(false);
         ui->runBtn->setEnabled(false);
     } else {
-        markCurrentLine();
+        markCurrentLine(res.line);
         ui->prevBtn->setEnabled(true);
     }
 }
 
 void MainWindow::on_prevBtn_clicked() {
-    bool succes = carriage.prev();
+    Request req(FN_CARRIAGE_PREV, carriageIndex, "");
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    delete client;
+    bool succes = res.status == 0;
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     if (!succes) {
         ui->prevBtn->setEnabled(false);
     } else {
         ui->nextBtn->setEnabled(true);
         ui->runBtn->setEnabled(true);
     }
-
-    markCurrentLine();
+    markCurrentLine(res.line);
 }
 
 void MainWindow::on_runBtn_clicked() {
-    while (carriage.next()) {}
+    Response res;
+    Request req(FN_CARRIAGE_NEXT, carriageIndex, "");
+    do {
+        client = new Client(req, this);
+        res = client->getResponse();
+        delete client;
+    } while (res.status == 0);
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
     ui->runBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
     ui->prevBtn->setEnabled(true);
@@ -274,10 +287,18 @@ void MainWindow::on_runBtn_clicked() {
 }
 
 void MainWindow::on_resetBtn_clicked() {
-    QString firstState = program->getCommand(0)->getCurrentState();
-    carriage = TuriCarriage(carriage.getResult(), ui->outputResult, firstState,
-                            program);
-    markCurrentLine();
+    Request req(FN_CARRIAGE_WORD, carriageIndex, "");
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    delete client;
+    QString newWord = res.word;
+    req = Request(FN_CARRIAGE_CREATE, -1, newWord, program);
+    client = new Client(req, this);
+    res = client->getResponse();
+    delete client;
+    carriageIndex = res.id;
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
+    markCurrentLine(res.line);
     ui->prevBtn->setEnabled(false);
     ui->nextBtn->setEnabled(true);
     ui->runBtn->setEnabled(true);
@@ -290,14 +311,28 @@ void MainWindow::on_resetAndRunBtn_clicked() {
     on_runBtn_clicked();
 }
 
-void MainWindow::on_moveLeftBtn_clicked() { carriage.moveView(LEFT); }
+void MainWindow::on_moveLeftBtn_clicked() {
+    Request req(FN_CARRIAGE_LEFT, carriageIndex, "");
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    delete client;
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
 
-void MainWindow::on_moveRightBtn_clicked() { carriage.moveView(RIGHT); }
+}
+
+void MainWindow::on_moveRightBtn_clicked() {
+    Request req(FN_CARRIAGE_RIGHT, carriageIndex, "");
+    client = new Client(req, this);
+    Response res = client->getResponse();
+    delete client;
+    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+
+}
 
 void MainWindow::setLineCounter() {
     QString res;
     int lineNumber = 30;
-    for (int i = 1; i <= lineNumber; i++) {
+    for (int i = 1; i < lineNumber; i++) {
         if (i < 10) res += " ";
         res += QString::number(i) + "\n";
     }

@@ -4,10 +4,12 @@
 #include "request.h"
 #include <QObject>
 #include <QTcpServer>
+#include "turicarriage.h"
 
 class Server : public QObject {
     QTcpServer * tcpServer;
     Q_OBJECT
+    QVector<TuriCarriage *> carriages;
 
   public:
     explicit Server(QObject * parent = nullptr);

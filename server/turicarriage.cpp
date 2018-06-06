@@ -7,27 +7,20 @@
 #include <exceptionmessage.h>
 #include <iostream>
 
-TuriCarriage::TuriCarriage(QLabel * _label) {
-    currentCellNumber = cellNumber / 2;
-    label = _label;
+TuriCarriage::TuriCarriage() {
     for (int i = 0; i < 100; i++)
         word.append(' ');
     position = 50;
-    draw();
 }
 
-TuriCarriage::TuriCarriage(QString _word, QLabel * _label,
-                           QString & _currentState, TuriProgram * program) {
-    currentCellNumber = (cellNumber - word.length()) / 2;
-    label = _label;
+TuriCarriage::TuriCarriage(QString _word, TuriProgram * program) {
     for (int i = 0; i < 100; i++)
         word.append(' ');
     int wordLength = _word.length();
     position = (100 - wordLength) / 2;
     word.replace(position, wordLength, _word);
-    currentState = _currentState;
+    currentState = program->getCommand(0)->getCurrentState();
     exec(program);
-    draw();
 }
 
 void TuriCarriage::exec(TuriProgram * program) {
@@ -61,13 +54,14 @@ void TuriCarriage::exec(TuriProgram * program) {
 QString TuriCarriage::getResult() {
     QString result;
     int start = 0;
-    int end = word.length() - 1;
-    while (word.at(start) == ' ')
+    QString source = step == words.length() ? word : words.at(step);
+    int end = source.length() - 1;
+    while (source.at(start) == ' ')
         start++;
-    while (word.at(end) == ' ')
+    while (source.at(end) == ' ')
         end--;
     for (int i = start; i <= end; i++)
-        result.append(word.at(i));
+        result.append(source.at(i));
     return result;
 }
 
@@ -86,66 +80,15 @@ void TuriCarriage::setSymbol(QChar symbol) {
 
 void TuriCarriage::setState(QString state) { currentState = state; }
 
-void TuriCarriage::draw() {
-    if (label == nullptr) return;
-    QString currStateTmp = step == states.length() ? "!" : states.at(step);
-
-    label->clear();
-    QPicture pi;
-    QPainter p(&pi);
-
-    p.setRenderHint(QPainter::Antialiasing);
-
-    p.setPen(Qt::NoPen);
-    if (currStateTmp == "!") {
-        p.setBrush(QColor(255, 150, 140));
-    } else
-        p.setBrush(QColor(120, 180, 150));
-    p.drawRect((currentCellNumber - 1) * cellWidth, 0, cellWidth, cellHeigth);
-
-    p.setPen(QPen(Qt::darkGray, 2));
-    p.drawLine(0, 0, carriageWidth, 0);
-    p.drawLine(0, cellHeigth, carriageWidth, cellHeigth);
-    p.drawRect((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25);
-    for (int i = cellWidth; i < carriageWidth; i += cellWidth) {
-        p.drawLine(i, 0, i, cellHeigth);
-    }
-
-    p.setPen(QPen(Qt::black));
-    QFont font = p.font();
-    font.setPointSize(25);
-    p.setFont(font);
-    QString currWord =
-        step == words.length()
-            ? word.mid(position - currentCellNumber + 1, cellNumber)
-            : words.at(step).mid(positions.at(step) - currentCellNumber + 1,
-                                 cellNumber);
-    for (int i = 0; i < cellNumber; i++) {
-        QString ch = currWord.at(i);
-        p.drawText(i * cellWidth, 0, cellWidth, cellHeigth, Qt::AlignCenter,
-                   ch);
-    }
-    font.setPointSize(10);
-    p.setFont(font);
-    p.drawText((currentCellNumber - 1) * cellWidth, cellHeigth, cellWidth, 25,
-               Qt::AlignCenter, currStateTmp);
-    p.end();
-    label->setPicture(pi);
-}
-
 bool TuriCarriage::next() {
     step++;
-    draw();
     return step != words.length();
 }
 
 bool TuriCarriage::prev() {
     step--;
-    draw();
     return step != 0;
 }
-
-int TuriCarriage::getLine() { return lines.at(step); }
 
 void TuriCarriage::moveView(DIRECTION direction) {
     if ((direction == LEFT && currentCellNumber == cellNumber) ||
@@ -157,15 +100,15 @@ void TuriCarriage::moveView(DIRECTION direction) {
     } else if (direction == RIGHT) {
         currentCellNumber--;
     }
-    draw();
 }
 
-QVector<QString> TuriCarriage::getWords() { return words; }
-QVector<QString> TuriCarriage::getStates() { return states; }
-QVector<int> TuriCarriage::getLines() { return lines; }
-QVector<int> TuriCarriage::getPositions() { return positions; }
-
-void TuriCarriage::setWords(QVector<QString> list) { words = list; }
-void TuriCarriage::setStates(QVector<QString> list) { states = list; }
-void TuriCarriage::setLines(QVector<int> list) { lines = list; }
-void TuriCarriage::setPositions(QVector<int> list) { positions = list; }
+QString TuriCarriage::getCurrentState() { return step == states.length() ? "!" : states.at(step); }
+QString TuriCarriage::getCurrentWord() {
+    std::cout << currentCellNumber << std::endl;
+    return step == words.length()
+            ? word.mid(position - currentCellNumber + 1, cellNumber)
+            : words.at(step).mid(positions.at(step) - currentCellNumber + 1,
+                                 cellNumber);
+}
+int TuriCarriage::getCurrentLine() { return step == lines.length() ? -1 : lines.at(step); }
+int TuriCarriage::getPosition() { return currentCellNumber; }

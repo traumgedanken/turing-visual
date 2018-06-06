@@ -9,10 +9,13 @@
 #include <QTextStream>
 #include <iostream>
 
-Response::Response(int _status, TuriProgram * _program, TuriCarriage *_carriage) {
+Response::Response(int _status, QString _word, QString _state, int _id, int _line, TuriProgram * _program) {
     status = _status;
     program = _program;
-    carriage = _carriage;
+    word = _word;
+    state = _state;
+    id = _id;
+    line = _line;
 }
 
 QString Response::serialize() {
@@ -20,7 +23,10 @@ QString Response::serialize() {
     QJsonObject responseObj;
 
     responseObj.insert("status", status);
-
+    responseObj.insert("word", word);
+    responseObj.insert("state", state);
+    responseObj.insert("id", id);
+    responseObj.insert("line", line);
     if (program == nullptr) {
         responseObj.insert("program", QJsonValue());
         responseObj.insert("errors", QJsonValue());
@@ -61,6 +67,10 @@ Response Response::deserialize(QString source) {
     QJsonObject responseObj = doc.object();
 
     int _status = responseObj.value("status").toInt();
+    QString _word = responseObj.value("word").toString();
+    QString _state = responseObj.value("state").toString();
+    int _id = responseObj.value("id").toInt();
+    int _line = responseObj.value("line").toInt();
     TuriProgram * _program = nullptr;
     if (!responseObj.value("program").isNull()) {
         QJsonArray programArr = responseObj.value("program").toArray();
@@ -85,9 +95,5 @@ Response Response::deserialize(QString source) {
         }
     }
 
-    return Response(_status, _program);
-}
-
-void Response::clean() {
-    if (program != nullptr) delete program;
+    return Response(_status, _word, _state, _id, _line, _program);
 }

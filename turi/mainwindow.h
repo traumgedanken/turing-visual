@@ -3,7 +3,6 @@
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <graphwidget.h>
-#include <turicarriage.h>
 #include <turiparsererror.h>
 #include <turiprogram.h>
 #include "client.h"
@@ -21,9 +20,10 @@ class MainWindow : public QMainWindow {
     bool codeEditedByUser = true;
     GraphWidget * graph = new GraphWidget(this, program);
     bool firstRun = true;
-    TuriCarriage carriage;
     QString originCodeText;
     Client * client = nullptr;
+    int carriageIndex = -1;
+
   public:
     explicit MainWindow(QWidget * parent = 0);
     ~MainWindow();
@@ -74,7 +74,7 @@ class MainWindow : public QMainWindow {
 
     void printProgram();
 
-    void markCurrentLine();
+    void markCurrentLine(int line);
 
     void setLineCounter();
 };

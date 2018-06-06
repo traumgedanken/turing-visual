@@ -37,10 +37,10 @@ SOURCES += \
     edge.cpp \
     node.cpp \
     graphwidget.cpp \
-    turicarriage.cpp \
     client.cpp \
     request.cpp \
-    response.cpp
+    response.cpp \
+    turicarriagepainter.cpp
 
 
 HEADERS += \
@@ -55,10 +55,10 @@ HEADERS += \
     edge.h \
     node.h \
     graphwidget.h \
-    turicarriage.h \
     client.h \
     request.h \
-    response.h
+    response.h \
+    turicarriagepainter.h
 
 FORMS += \
         mainwindow.ui
