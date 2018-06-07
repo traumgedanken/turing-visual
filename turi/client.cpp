@@ -1,7 +1,6 @@
 #include "client.h"
 #include <QHostAddress>
 #include <QTcpSocket>
-#include <iostream>
 
 using namespace std;
 

@@ -1,9 +1,9 @@
 #include "turicarriagepainter.h"
-
 #include <QPainter>
 #include <QPicture>
 
-void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state, int position) {
+void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state,
+                               int position) {
     label->clear();
     QPicture pi;
     QPainter p(&pi);
@@ -41,4 +41,3 @@ void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state, 
     p.end();
     label->setPicture(pi);
 }
-

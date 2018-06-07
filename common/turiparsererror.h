@@ -1,9 +1,9 @@
 #pragma once
 
 #include "common_global.h"
+#include "defines.h"
 #include <QString>
 #include <QVector>
-#include <defines.h>
 
 class COMMONSHARED_EXPORT TuriParserError {
     int line;

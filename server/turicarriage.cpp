@@ -95,12 +95,16 @@ void TuriCarriage::moveView(DIRECTION direction) {
     }
 }
 
-QString TuriCarriage::getCurrentState() { return step == states.length() ? "!" : states.at(step); }
+QString TuriCarriage::getCurrentState() {
+    return step == states.length() ? "!" : states.at(step);
+}
 QString TuriCarriage::getCurrentWord() {
     return step == words.length()
-            ? word.mid(position - currentCellNumber + 1, cellNumber)
-            : words.at(step).mid(positions.at(step) - currentCellNumber + 1,
-                                 cellNumber);
+               ? word.mid(position - currentCellNumber + 1, cellNumber)
+               : words.at(step).mid(positions.at(step) - currentCellNumber + 1,
+                                    cellNumber);
 }
-int TuriCarriage::getCurrentLine() { return step == lines.length() ? -1 : lines.at(step); }
+int TuriCarriage::getCurrentLine() {
+    return step == lines.length() ? -1 : lines.at(step);
+}
 int TuriCarriage::getPosition() { return currentCellNumber; }

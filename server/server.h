@@ -1,8 +1,8 @@
 #pragma once
 
-#include "request.h"
-#include <QTcpServer>
 #include "turicarriage.h"
+#include <QTcpServer>
+#include <request.h>
 
 class Server : public QObject {
     QTcpServer * tcpServer;

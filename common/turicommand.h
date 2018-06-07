@@ -1,8 +1,8 @@
 #pragma once
 
 #include "common_global.h"
+#include "defines.h"
 #include <QString>
-#include <defines.h>
 
 class COMMONSHARED_EXPORT TuriCommand {
     QString currentState;

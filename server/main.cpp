@@ -1,5 +1,5 @@
+#include "server.h"
 #include <QCoreApplication>
-#include <server.h>
 
 using namespace std;
 

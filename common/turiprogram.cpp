@@ -23,9 +23,8 @@ TuriCommand * TuriProgram::getCommandWithCurrentState(QString _currentState) {
     return nullptr;
 }
 
-void TuriProgram::setErrorsList(QVector<TuriParserError *> &_errors) {
+void TuriProgram::setErrorsList(QVector<TuriParserError *> & _errors) {
     errors = _errors;
 }
 
 QVector<TuriParserError *> TuriProgram::getErrors() { return errors; }
-

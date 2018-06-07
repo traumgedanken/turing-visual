@@ -1,11 +1,10 @@
 #pragma once
 
+#include "client.h"
 #include <QCloseEvent>
 #include <QMainWindow>
 #include <graphwidget.h>
-#include <turiparsererror.h>
 #include <turiprogram.h>
-#include "client.h"
 
 namespace Ui {
 class MainWindow;
@@ -61,7 +60,19 @@ class MainWindow : public QMainWindow {
 
     void on_moveRightBtn_clicked();
 
-  private:
+    void on_actionSetup_triggered();
+
+    void on_actionPrevious_step_triggered();
+
+    void on_actionNext_step_triggered();
+
+    void on_actionRun_triggered();
+
+    void on_actionReset_triggered();
+
+    void on_actionReset_and_run_triggered();
+
+private:
     Ui::MainWindow * ui;
 
     void printProgramTable();

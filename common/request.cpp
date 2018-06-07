@@ -2,15 +2,14 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <iostream>
 
-Request::Request(FunctionName _functionName, int _id, QString _code, TuriProgram *_program) {
+Request::Request(FunctionName _functionName, int _id, QString _code,
+                 TuriProgram * _program) {
     functionName = _functionName;
     code = _code;
     program = _program;
     id = _id;
 }
-
 
 QString Request::serialize() {
     QJsonDocument doc;
@@ -25,14 +24,17 @@ QString Request::serialize() {
             TuriCommand * currCommand = program->getCommand(i);
             QJsonObject commandObj;
             commandObj.insert("currentState", currCommand->getCurrentState());
-            commandObj.insert("currentSymbol", QString(currCommand->getCurrentSymbol()));
+            commandObj.insert("currentSymbol",
+                              QString(currCommand->getCurrentSymbol()));
             commandObj.insert("nextState", currCommand->getNextState());
-            commandObj.insert("nextSymbol", QString(currCommand->getNextSymbol()));
+            commandObj.insert("nextSymbol",
+                              QString(currCommand->getNextSymbol()));
             commandObj.insert("direction", currCommand->getDirection());
             programArr.append(commandObj);
         }
         requestObj.insert("program", programArr);
-    } else requestObj.insert("program", QJsonValue());
+    } else
+        requestObj.insert("program", QJsonValue());
     doc.setObject(requestObj);
     return QString(doc.toJson());
 }
@@ -40,10 +42,11 @@ QString Request::serialize() {
 Request Request::deserialize(QString source) {
     QJsonParseError err;
     QJsonDocument doc = QJsonDocument::fromJson(
-    QByteArray::fromStdString(source.toStdString()), &err);
+        QByteArray::fromStdString(source.toStdString()), &err);
     QJsonObject requestObj = doc.object();
     QString _code = requestObj.value("code").toString();
-    FunctionName _functionName = (FunctionName)requestObj.value("functionName").toInt();
+    FunctionName _functionName =
+        (FunctionName)requestObj.value("functionName").toInt();
     int _id = requestObj.value("id").toInt();
     TuriProgram * _program = nullptr;
     if (!requestObj.value("program").isNull()) {
@@ -52,13 +55,12 @@ Request Request::deserialize(QString source) {
         for (auto value : programArr) {
             QJsonObject commandObj = value.toObject();
             _program->addCommand(new TuriCommand(
-                                    commandObj.value("currentState").toString(),
-                                    commandObj.value("nextState").toString(),
-                                    commandObj.value("currentSymbol").toString().at(0),
-                                    commandObj.value("nextSymbol").toString().at(0),
-                                   (DIRECTION)commandObj.value("direction").toInt()));
+                commandObj.value("currentState").toString(),
+                commandObj.value("nextState").toString(),
+                commandObj.value("currentSymbol").toString().at(0),
+                commandObj.value("nextSymbol").toString().at(0),
+                (DIRECTION)commandObj.value("direction").toInt()));
         }
     }
     return Request(_functionName, _id, _code, _program);
 }
-

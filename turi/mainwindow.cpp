@@ -1,35 +1,31 @@
 #include "mainwindow.h"
+#include "defines.h"
+#include "htmltext.h"
+#include "turicarriagepainter.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QPicture>
 #include <QTabWidget>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QThread>
-#include "htmltext.h"
-#include <iostream>
-#include "turicarriagepainter.h"
-#include "defines.h"
 
-#define PROCESS_ERROR_RESPONSE \
-    if (res.status == NETWORK_ERROR_CODE) { \
-        QMessageBox::critical(this, "ERROR", res.word); \
-        close(); \
+#define PROCESS_ERROR_RESPONSE                                                 \
+    if (res.status == NETWORK_ERROR_CODE) {                                    \
+        QMessageBox::critical(this, "ERROR", res.word);                        \
+        close();                                                               \
     }
 
-#define TRY_GET_RESPONSE(REQUEST) \
-    Response res; \
-    try { \
-        client = new Client(REQUEST, this); \
-        res = client->getResponse(); \
-        delete client; \
-    } catch (std::exception) { \
-        QMessageBox::critical(this, "ERROR", "Error connecting to server"); \
-        close(); \
-        return; \
-    } \
+#define TRY_GET_RESPONSE(REQUEST)                                              \
+    Response res;                                                              \
+    try {                                                                      \
+        client = new Client(REQUEST, this);                                    \
+        res = client->getResponse();                                           \
+        delete client;                                                         \
+    } catch (std::exception) {                                                 \
+        QMessageBox::critical(this, "ERROR", "Error connecting to server");    \
+        close();                                                               \
+        return;                                                                \
+    }                                                                          \
     PROCESS_ERROR_RESPONSE
 
 MainWindow::MainWindow(QWidget * parent)
@@ -146,6 +142,10 @@ void MainWindow::on_actionOpen_triggered() {
 void MainWindow::on_setupBtn_clicked() {
     Request req(FN_CARRIAGE_CREATE, -1, ui->inputEdit->text(), program);
     TRY_GET_RESPONSE(req)
+    if (res.status == NETWORK_FALSE) {
+        QMessageBox::critical(this, "ERROR", res.word);
+        return;
+    }
     carriageIndex = res.id;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
     markCurrentLine(res.line);
@@ -164,8 +164,7 @@ void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
 void MainWindow::validateSetupBtn() {
     int errorNumber = errors.length();
     bool validity = !ui->inputEdit->text().isEmpty() &&
-            !ui->codeEdit->toPlainText().isEmpty() &&
-            errorNumber == 0;
+                    !ui->codeEdit->toPlainText().isEmpty() && errorNumber == 0;
     ui->setupBtn->setEnabled(validity);
     if (!validity) {
         ui->prevBtn->setEnabled(validity);
@@ -245,7 +244,12 @@ void MainWindow::on_actionExit_triggered() {
 }
 
 void MainWindow::on_actionAbout_Turi_IDE_triggered() {
-    //
+    QString info = "Turi IDE v1.0\n"
+                   "Developer: Ihor Bulaevsky\n"
+                   "Course work at KPI\n"
+                   "Teacher: Hadyniak, R.A.\n\n\n"
+                   "Donate: 5167 9856 9006 2179";
+    QMessageBox::information(this, "About", info);
 }
 
 void MainWindow::markCurrentLine(int line) {
@@ -330,7 +334,6 @@ void MainWindow::on_moveRightBtn_clicked() {
     Request req(FN_CARRIAGE_RIGHT, carriageIndex, "");
     TRY_GET_RESPONSE(req)
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
-
 }
 
 void MainWindow::setLineCounter() {
@@ -341,4 +344,34 @@ void MainWindow::setLineCounter() {
         res += QString::number(i) + "\n";
     }
     ui->lineCountLabel->setText(res);
+}
+
+void MainWindow::on_actionSetup_triggered() {
+    if (ui->setupBtn->isEnabled())
+        on_setupBtn_clicked();
+}
+
+void MainWindow::on_actionPrevious_step_triggered() {
+    if (ui->prevBtn->isEnabled())
+        on_prevBtn_clicked();
+}
+
+void MainWindow::on_actionNext_step_triggered() {
+    if (ui->nextBtn->isEnabled())
+        on_nextBtn_clicked();
+}
+
+void MainWindow::on_actionRun_triggered() {
+    if (ui->runBtn->isEnabled())
+        on_runBtn_clicked();
+}
+
+void MainWindow::on_actionReset_triggered() {
+    if (ui->resetBtn->isEnabled())
+        on_resetBtn_clicked();
+}
+
+void MainWindow::on_actionReset_and_run_triggered() {
+    if (ui->resetAndRunBtn->isEnabled())
+        on_resetAndRunBtn_clicked();
 }

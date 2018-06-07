@@ -33,6 +33,7 @@ class TuriCarriage {
     QString getCurrentWord();
     int getCurrentLine();
     int getPosition();
+
   private:
     void move(DIRECTION direction);
 

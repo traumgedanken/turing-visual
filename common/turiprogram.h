@@ -1,8 +1,8 @@
 #pragma once
 
-#include "turiparsererror.h"
 #include "common_global.h"
 #include "turicommand.h"
+#include "turiparsererror.h"
 
 class COMMONSHARED_EXPORT TuriProgram {
     QVector<TuriCommand *> program;
@@ -21,7 +21,7 @@ class COMMONSHARED_EXPORT TuriProgram {
 
     QVector<TuriParserError *> getErrors();
 
-    void setErrorsList(QVector<TuriParserError *> &_errors);
+    void setErrorsList(QVector<TuriParserError *> & _errors);
 
     TuriCommand * getCommandWithCurrentState(QString _currentState);
 };

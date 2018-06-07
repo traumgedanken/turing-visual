@@ -24,7 +24,8 @@ class COMMONSHARED_EXPORT Request {
     int id = -1;
 
     Request() {}
-    Request(FunctionName _functionName, int _id = -1, QString _code = "", TuriProgram * _program = nullptr);
+    Request(FunctionName _functionName, int _id = -1, QString _code = "",
+            TuriProgram * _program = nullptr);
     QString serialize();
     static Request deserialize(QString _source);
 };

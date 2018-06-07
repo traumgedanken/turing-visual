@@ -52,9 +52,8 @@
 #include "edge.h"
 #include "node.h"
 #include <QDebug>
-#include <math.h>
 #include <QKeyEvent>
-//#include <QRandomGenerator>
+#include <math.h>
 
 GraphWidget::GraphWidget(QWidget * parent, TuriProgram * program)
     : QGraphicsView(parent), timerId(0) {

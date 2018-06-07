@@ -3,7 +3,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-Response::Response(int _status, QString _word, QString _state, int _id, int _line, TuriProgram * _program) {
+Response::Response(int _status, QString _word, QString _state, int _id,
+                   int _line, TuriProgram * _program) {
     status = _status;
     program = _program;
     word = _word;
@@ -30,9 +31,11 @@ QString Response::serialize() {
             TuriCommand * currCommand = program->getCommand(i);
             QJsonObject commandObj;
             commandObj.insert("currentState", currCommand->getCurrentState());
-            commandObj.insert("currentSymbol", QString(currCommand->getCurrentSymbol()));
+            commandObj.insert("currentSymbol",
+                              QString(currCommand->getCurrentSymbol()));
             commandObj.insert("nextState", currCommand->getNextState());
-            commandObj.insert("nextSymbol", QString(currCommand->getNextSymbol()));
+            commandObj.insert("nextSymbol",
+                              QString(currCommand->getNextSymbol()));
             commandObj.insert("direction", currCommand->getDirection());
             programArr.append(commandObj);
         }
@@ -72,19 +75,20 @@ Response Response::deserialize(QString source) {
         for (auto value : programArr) {
             QJsonObject commandObj = value.toObject();
             _program->addCommand(new TuriCommand(
-                                    commandObj.value("currentState").toString(),
-                                    commandObj.value("nextState").toString(),
-                                    commandObj.value("currentSymbol").toString().at(0),
-                                    commandObj.value("nextSymbol").toString().at(0),
-                                   (DIRECTION)commandObj.value("direction").toInt()));
+                commandObj.value("currentState").toString(),
+                commandObj.value("nextState").toString(),
+                commandObj.value("currentSymbol").toString().at(0),
+                commandObj.value("nextSymbol").toString().at(0),
+                (DIRECTION)commandObj.value("direction").toInt()));
         }
         QVector<TuriParserError *> errors;
         QJsonArray errorsArr = responseObj.value("errors").toArray();
         for (auto value : errorsArr) {
             QJsonObject errorObj = value.toObject();
-            errors.append(new TuriParserError((ERROR_TYPE)errorObj.value("errorType").toInt(),
-                                              errorObj.value("line").toInt(),
-                                              errorObj.value("errorText").toString()));
+            errors.append(new TuriParserError(
+                (ERROR_TYPE)errorObj.value("errorType").toInt(),
+                errorObj.value("line").toInt(),
+                errorObj.value("errorText").toString()));
             _program->setErrorsList(errors);
         }
     }

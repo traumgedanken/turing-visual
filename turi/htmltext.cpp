@@ -1,5 +1,4 @@
 #include "htmltext.h"
-#include <QDebug>
 
 HtmlText::HtmlText(QString _text) { text = _text; }
 

@@ -1,19 +1,19 @@
 #include "server.h"
-#include "response.h"
-#include "turiprogram.h"
 #include <QDir>
 #include <QTcpSocket>
+#include <defines.h>
 #include <iostream>
-#include "turiparser.h"
-#include "defines.h"
+#include <response.h>
+#include <turiparser.h>
+#include <turiprogram.h>
 
 using namespace std;
 
-#define RETURN_INVALID_INDEX_ERROR \
-    if (req.id < 0 || req.id >= carriages.length()) { \
-        Response res(NETWORK_ERROR_CODE, "Invalid index"); \
-        return res.serialize(); \
-    } \
+#define RETURN_INVALID_INDEX_ERROR                                             \
+    if (req.id < 0 || req.id >= carriages.length()) {                          \
+        Response res(NETWORK_ERROR_CODE, "Invalid index");                     \
+        return res.serialize();                                                \
+    }
 
 Server::Server(QObject * parent) : QObject(parent) {
     tcpServer = new QTcpServer(this);
@@ -68,12 +68,16 @@ QString Server::fromRequest(Request & req) {
             Response res(NETWORK_ERROR_CODE, "Server needs to be rebooted");
             return res.serialize();
         }
-        TuriCarriage * carriage = new TuriCarriage(req.code, req.program);
+        TuriCarriage * carriage = nullptr;
+        try {
+            carriage = new TuriCarriage(req.code, req.program);
+        } catch (std::exception) {
+            Response res(NETWORK_FALSE, "Error at setup. Invalid input");
+            return res.serialize();
+        }
         carriages.append(carriage);
-        Response res(NETWORK_TRUE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriages.length() - 1,
+        Response res(NETWORK_TRUE, carriage->getCurrentWord(),
+                     carriage->getCurrentState(), carriages.length() - 1,
                      carriage->getCurrentLine());
         return res.serialize();
     }
@@ -82,10 +86,8 @@ QString Server::fromRequest(Request & req) {
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->prev();
         Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriage->getPosition(),
-                     carriage->getCurrentLine());
+                     carriage->getCurrentWord(), carriage->getCurrentState(),
+                     carriage->getPosition(), carriage->getCurrentLine());
         return res.serialize();
     }
     case FN_CARRIAGE_NEXT: {
@@ -93,30 +95,24 @@ QString Server::fromRequest(Request & req) {
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->next();
         Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriage->getPosition(),
-                     carriage->getCurrentLine());
+                     carriage->getCurrentWord(), carriage->getCurrentState(),
+                     carriage->getPosition(), carriage->getCurrentLine());
         return res.serialize();
     }
     case FN_CARRIAGE_LEFT: {
         RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         carriage->moveView(LEFT);
-        Response res(NETWORK_TRUE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriage->getPosition(), -1);
+        Response res(NETWORK_TRUE, carriage->getCurrentWord(),
+                     carriage->getCurrentState(), carriage->getPosition(), -1);
         return res.serialize();
     }
     case FN_CARRIAGE_RIGHT: {
         RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         carriage->moveView(RIGHT);
-        Response res(NETWORK_TRUE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriage->getPosition(), -1);
+        Response res(NETWORK_TRUE, carriage->getCurrentWord(),
+                     carriage->getCurrentState(), carriage->getPosition(), -1);
         return res.serialize();
     }
     case FN_CARRIAGE_WORD: {
@@ -129,10 +125,8 @@ QString Server::fromRequest(Request & req) {
         RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         while (carriage->next()) {}
-        Response res(NETWORK_TRUE,
-                     carriage->getCurrentWord(),
-                     carriage->getCurrentState(),
-                     carriage->getPosition(),
+        Response res(NETWORK_TRUE, carriage->getCurrentWord(),
+                     carriage->getCurrentState(), carriage->getPosition(),
                      carriage->getCurrentLine());
         return res.serialize();
     }

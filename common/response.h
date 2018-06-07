@@ -13,7 +13,8 @@ class COMMONSHARED_EXPORT Response {
     int line = -1;
 
     Response() {}
-    Response(int _status, QString _word = "", QString _state = "", int _id = -1, int _line = -1, TuriProgram * _program = nullptr);
+    Response(int _status, QString _word = "", QString _state = "", int _id = -1,
+             int _line = -1, TuriProgram * _program = nullptr);
     QString serialize();
     static Response deserialize(QString source);
 };

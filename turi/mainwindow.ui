@@ -339,10 +339,12 @@
     <property name="title">
      <string>E&amp;xecute</string>
     </property>
-    <addaction name="actionBuild"/>
-    <addaction name="actionRun"/>
+    <addaction name="actionSetup"/>
+    <addaction name="actionPrevious_step"/>
     <addaction name="actionNext_step"/>
-    <addaction name="actionTo_the_end"/>
+    <addaction name="actionRun"/>
+    <addaction name="actionReset"/>
+    <addaction name="actionReset_and_run"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -386,29 +388,60 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionBuild">
+  <action name="actionAbout_Turi_IDE">
    <property name="text">
-    <string>&amp;Build</string>
+    <string>&amp;About Turi IDE</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="actionRun">
+  <action name="actionSetup">
    <property name="text">
-    <string>&amp;Run</string>
+    <string>Setup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+S</string>
+   </property>
+  </action>
+  <action name="actionPrevious_step">
+   <property name="text">
+    <string>Previous step</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionNext_step">
    <property name="text">
-    <string>&amp;Next step</string>
+    <string>Next step</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionTo_the_end">
+  <action name="actionRun">
    <property name="text">
-    <string>&amp;To the end</string>
+    <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
-  <action name="actionAbout_Turi_IDE">
+  <action name="actionReset">
    <property name="text">
-    <string>&amp;About Turi IDE</string>
+    <string>Reset</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionReset_and_run">
+   <property name="text">
+    <string>Reset and run</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+R</string>
    </property>
   </action>
  </widget>

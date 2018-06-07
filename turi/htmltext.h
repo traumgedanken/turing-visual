@@ -1,7 +1,5 @@
 #pragma once
 
-#include <QString>
-#include <QVector>
 #include <turiparsererror.h>
 
 class HtmlText {
