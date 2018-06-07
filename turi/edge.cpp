@@ -76,7 +76,7 @@ void Edge::adjust() {
 
     prepareGeometryChange();
 
-    if (length > qreal(80.)) {
+    if (length > qreal(40.)) {
         QPointF edgeOffset((line.dx() * 20) / length,
                            (line.dy() * 20) / length);
         sourcePoint = line.p1() + edgeOffset;

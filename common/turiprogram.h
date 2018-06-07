@@ -15,6 +15,8 @@ class COMMONSHARED_EXPORT TuriProgram {
 
     void addCommand(TuriCommand * newCommand);
 
+    void removeCommands();
+
     TuriCommand * getCommand(int index);
 
     int count();

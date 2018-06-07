@@ -34,6 +34,25 @@
     }                                                                          \
     PROCESS_ERROR_RESPONSE
 
+#define GET_NEW_FILE_NAME                                                      \
+    QFileDialog dialog(this);                                                  \
+    dialog.setAcceptMode(QFileDialog::AcceptSave);                             \
+    dialog.setDefaultSuffix("turi");                                           \
+    QStringList fileNames;                                                     \
+    if (dialog.exec()) {                                                       \
+        fileNames = dialog.selectedFiles();                                    \
+        fileName = fileNames.at(0);                                            \
+        fileIsSaved = true;                                                    \
+    }
+
+#define SAVE_TO_FILE                                                           \
+    QFile file(fileName);                                                      \
+    file.open(QIODevice::WriteOnly | QIODevice::Text);                         \
+    QTextStream out(&file);                                                    \
+    out << ui->codeEdit->toPlainText();                                        \
+    file.close();                                                              \
+    fileIsSaved = true;
+
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -83,8 +102,8 @@ void MainWindow::on_codeEdit_textChanged() {
     printErrorsList();
     printProgram();
     validateSetupBtn();
+    printProgramTable();
     if (errors.isEmpty()) {
-        printProgramTable();
         ui->tabWidget->setTabText(1, "Errors");
         ui->tabWidget->removeTab(2);
         QString name = "Graph";
@@ -146,7 +165,8 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_setupBtn_clicked() {
-    Request req(FN_CARRIAGE_CREATE, carriageIndex, ui->inputEdit->text(), program);
+    Request req(FN_CARRIAGE_CREATE, carriageIndex, ui->inputEdit->text(),
+                program);
     TRY_GET_RESPONSE(req)
     PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
@@ -161,6 +181,7 @@ void MainWindow::on_setupBtn_clicked() {
 }
 
 void MainWindow::on_inputEdit_textChanged(const QString & arg1) {
+    (void)arg1;
     validateSetupBtn();
 }
 
@@ -179,43 +200,13 @@ void MainWindow::validateSetupBtn() {
 }
 
 void MainWindow::on_actionSave_triggered() {
-    if (fileName.isEmpty()) {
-        QFileDialog dialog(this);
-        dialog.setAcceptMode(QFileDialog::AcceptSave);
-        dialog.setDefaultSuffix("turi");
-        QStringList fileNames;
-        if (dialog.exec()) {
-            fileNames = dialog.selectedFiles();
-            fileName = fileNames.at(0);
-            fileIsSaved = true;
-        }
-    }
-
-    QFile file(fileName);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out << ui->codeEdit->toPlainText();
-    file.close();
-    fileIsSaved = true;
+    if (fileName.isEmpty()) { GET_NEW_FILE_NAME }
+    SAVE_TO_FILE
 }
 
 void MainWindow::on_actionSave_as_triggered() {
-    QFileDialog dialog(this);
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    dialog.setDefaultSuffix("turi");
-    QStringList fileNames;
-    if (dialog.exec()) {
-        fileNames = dialog.selectedFiles();
-        fileName = fileNames.at(0);
-        fileIsSaved = true;
-    }
-
-    QFile file(fileName);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&file);
-    out << ui->codeEdit->toPlainText();
-    file.close();
-    fileIsSaved = true;
+    GET_NEW_FILE_NAME
+    SAVE_TO_FILE
 }
 
 int MainWindow::onClose() {
@@ -245,7 +236,7 @@ void MainWindow::closeEvent(QCloseEvent * ev) {
         try {
             client = new Client(req, this);
             delete client;
-        } catch(std::exception) {}
+        } catch (std::exception) {}
     }
 }
 
@@ -358,31 +349,31 @@ void MainWindow::setLineCounter() {
 }
 
 void MainWindow::on_actionSetup_triggered() {
-    if (ui->setupBtn->isEnabled())
-        on_setupBtn_clicked();
+    if (ui->setupBtn->isEnabled()) on_setupBtn_clicked();
 }
 
 void MainWindow::on_actionPrevious_step_triggered() {
-    if (ui->prevBtn->isEnabled())
-        on_prevBtn_clicked();
+    if (ui->prevBtn->isEnabled()) on_prevBtn_clicked();
 }
 
 void MainWindow::on_actionNext_step_triggered() {
-    if (ui->nextBtn->isEnabled())
-        on_nextBtn_clicked();
+    if (ui->nextBtn->isEnabled()) on_nextBtn_clicked();
 }
 
 void MainWindow::on_actionRun_triggered() {
-    if (ui->runBtn->isEnabled())
-        on_runBtn_clicked();
+    if (ui->runBtn->isEnabled()) on_runBtn_clicked();
 }
 
 void MainWindow::on_actionReset_triggered() {
-    if (ui->resetBtn->isEnabled())
-        on_resetBtn_clicked();
+    if (ui->resetBtn->isEnabled()) on_resetBtn_clicked();
 }
 
 void MainWindow::on_actionReset_and_run_triggered() {
-    if (ui->resetAndRunBtn->isEnabled())
-        on_resetAndRunBtn_clicked();
+    if (ui->resetAndRunBtn->isEnabled()) on_resetAndRunBtn_clicked();
+}
+
+void MainWindow::on_suckingDickPushBtn_clicked() {
+    QMessageBox::information(this, "LOL",
+                             "Congratulations!!\n\n"
+                             "You successfuly sucked a dick....");
 }

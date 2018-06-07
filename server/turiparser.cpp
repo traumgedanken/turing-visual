@@ -95,6 +95,7 @@ TuriProgram * TuriParser::parseTuriProgram() {
     }
     errorsPostProcess(program);
     program->setErrorsList(errors);
+    if (!errors.isEmpty()) program->removeCommands();
     return program;
 }
 

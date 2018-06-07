@@ -92,17 +92,13 @@ void Node::paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
     painter->setBrush(Qt::darkGray);
     painter->drawEllipse(-7, -7, 20, 20);
 
-    QRadialGradient gradient(-3, -3, 10);
+    QColor color = name == "!" ? QColor(255, 180, 180) : QColor(137, 182, 255);
+
     if (option->state & QStyle::State_Sunken) {
-        gradient.setCenter(3, 3);
-        gradient.setFocalPoint(3, 3);
-        gradient.setColorAt(1, QColor(255, 180, 180).light(115));
-        gradient.setColorAt(0, QColor(255, 180, 180).light(115));
+        painter->setBrush(color.light(115));
     } else {
-        gradient.setColorAt(0, QColor(255, 180, 180));
-        gradient.setColorAt(1, QColor(255, 180, 180));
+        painter->setBrush(color);
     }
-    painter->setBrush(gradient);
 
     painter->setPen(QPen(Qt::black, 0));
     painter->drawEllipse(-20, -20, 40, 40);

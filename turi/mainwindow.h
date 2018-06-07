@@ -72,6 +72,8 @@ class MainWindow : public QMainWindow {
 
     void on_actionReset_and_run_triggered();
 
+    void on_suckingDickPushBtn_clicked();
+
 private:
     Ui::MainWindow * ui;
 

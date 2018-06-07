@@ -28,3 +28,8 @@ void TuriProgram::setErrorsList(QVector<TuriParserError *> & _errors) {
 }
 
 QVector<TuriParserError *> TuriProgram::getErrors() { return errors; }
+
+void TuriProgram::removeCommands() {
+    for (auto & com : program) delete com;
+    program.clear();
+}
