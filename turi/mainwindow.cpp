@@ -9,6 +9,12 @@
 #include <QTextCodec>
 #include <QTextStream>
 
+#define PROCESS_FALSE_RESPONSE                                                 \
+    if (res.status == NETWORK_FALSE) {                                         \
+        QMessageBox::information(this, "ERROR", res.word);                     \
+        return;                                                                \
+    }
+
 #define PROCESS_ERROR_RESPONSE                                                 \
     if (res.status == NETWORK_ERROR_CODE) {                                    \
         QMessageBox::critical(this, "ERROR", res.word);                        \
@@ -140,12 +146,9 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_setupBtn_clicked() {
-    Request req(FN_CARRIAGE_CREATE, -1, ui->inputEdit->text(), program);
+    Request req(FN_CARRIAGE_CREATE, carriageIndex, ui->inputEdit->text(), program);
     TRY_GET_RESPONSE(req)
-    if (res.status == NETWORK_FALSE) {
-        QMessageBox::critical(this, "ERROR", res.word);
-        return;
-    }
+    PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
     markCurrentLine(res.line);
@@ -237,6 +240,13 @@ void MainWindow::closeEvent(QCloseEvent * ev) {
         ev->accept();
     } else
         ev->ignore();
+    if (carriageIndex != -1) {
+        Request req(FN_CARRIAGE_DELETE, carriageIndex);
+        try {
+            client = new Client(req, this);
+            delete client;
+        } catch(std::exception) {}
+    }
 }
 
 void MainWindow::on_actionExit_triggered() {
@@ -305,10 +315,11 @@ void MainWindow::on_resetBtn_clicked() {
     Request req(FN_CARRIAGE_WORD, carriageIndex, "");
     TRY_GET_RESPONSE(req)
     QString newWord = res.word;
-    req = Request(FN_CARRIAGE_CREATE, -1, newWord, program);
+    req = Request(FN_CARRIAGE_CREATE, carriageIndex, newWord, program);
     client = new Client(req, this);
     res = client->getResponse();
     delete client;
+    PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
     markCurrentLine(res.line);

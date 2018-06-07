@@ -9,13 +9,15 @@ class Server : public QObject {
     Q_OBJECT
     QVector<TuriCarriage *> carriages;
 
-    static const int MAX_CAPACITY = 10000;
+    static const int MAX_CLIENT_NUMBER = 3;
 
   public:
     explicit Server(QObject * parent = nullptr);
 
   private:
     QString fromRequest(Request & req);
+    int numberOfClients();
+    int newClient(TuriCarriage * carriage);
   signals:
 
   public slots:

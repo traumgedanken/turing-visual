@@ -5,7 +5,6 @@
 #-------------------------------------------------
 
 QT       += core gui network
-
 CONFIG += c++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -25,27 +24,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    htmltext.cpp \
-    edge.cpp \
-    node.cpp \
-    graphwidget.cpp \
-    client.cpp \
+SOURCES +=                 \
+    main.cpp               \
+    mainwindow.cpp         \
+    htmltext.cpp           \
+    edge.cpp               \
+    node.cpp               \
+    graphwidget.cpp        \
+    client.cpp             \
     turicarriagepainter.cpp
 
 
-HEADERS += \
-    mainwindow.h \
-    htmltext.h \
-    edge.h \
-    node.h \
-    graphwidget.h \
-    client.h \
+HEADERS +=                 \
+    mainwindow.h           \
+    htmltext.h             \
+    edge.h                 \
+    node.h                 \
+    graphwidget.h          \
+    client.h               \
     turicarriagepainter.h
 
-FORMS += \
+FORMS +=                   \
         mainwindow.ui
 
 INCLUDEPATH += ../common

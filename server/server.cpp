@@ -64,8 +64,8 @@ QString Server::fromRequest(Request & req) {
         return result;
     }
     case FN_CARRIAGE_CREATE: {
-        if (carriages.length() > MAX_CAPACITY) {
-            Response res(NETWORK_ERROR_CODE, "Server needs to be rebooted");
+        if (numberOfClients() >= MAX_CLIENT_NUMBER) {
+            Response res(NETWORK_FALSE, "Server is overload. Wait please");
             return res.serialize();
         }
         TuriCarriage * carriage = nullptr;
@@ -75,9 +75,13 @@ QString Server::fromRequest(Request & req) {
             Response res(NETWORK_FALSE, "Error at setup. Invalid input");
             return res.serialize();
         }
-        carriages.append(carriage);
+        if (req.id != -1) {
+            delete carriages[req.id];
+            carriages[req.id] = nullptr;
+        }
+        int newId = newClient(carriage);
         Response res(NETWORK_TRUE, carriage->getCurrentWord(),
-                     carriage->getCurrentState(), carriages.length() - 1,
+                     carriage->getCurrentState(), newId,
                      carriage->getCurrentLine());
         return res.serialize();
     }
@@ -130,6 +134,13 @@ QString Server::fromRequest(Request & req) {
                      carriage->getCurrentLine());
         return res.serialize();
     }
+    case FN_CARRIAGE_DELETE: {
+        RETURN_INVALID_INDEX_ERROR
+        delete carriages[req.id];
+        carriages[req.id] = nullptr;
+        Response res(NETWORK_TRUE);
+        return res.serialize();
+    }
     default: {
         Response res(NETWORK_ERROR_CODE, "Unrecognized command");
         return res.serialize();
@@ -138,3 +149,24 @@ QString Server::fromRequest(Request & req) {
 }
 
 void Server::onClientDisconnected() { cout << "Client disconnected " << endl; }
+
+int Server::numberOfClients() {
+    int number = 0;
+    for (auto & carriage : carriages) {
+        if (carriage != nullptr) number++;
+    }
+    return number;
+}
+
+int Server::newClient(TuriCarriage * carriage) {
+    int oldLength = carriages.length();
+    if (numberOfClients() == oldLength) {
+        carriages.append(carriage);
+        return oldLength;
+    }
+    int newId = 0;
+    while(carriages[newId] != nullptr) newId++;
+    carriages[newId] = carriage;
+    return newId;
+
+}
