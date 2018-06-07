@@ -1,8 +1,9 @@
 #pragma once
 
+#include "common_global.h"
 #include <QString>
 
-class ExceptionMessage : public std::exception {
+class COMMONSHARED_EXPORT ExceptionMessage : public std::exception {
     QString errorMessage;
 
   public:

@@ -10,7 +10,6 @@
 #include <QThread>
 #include "htmltext.h"
 #include <iostream>
-#include <turiparser.h>
 #include "turicarriagepainter.h"
 #include "defines.h"
 

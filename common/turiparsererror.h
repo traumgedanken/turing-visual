@@ -1,10 +1,11 @@
 #pragma once
 
+#include "common_global.h"
 #include <QString>
 #include <QVector>
 #include <defines.h>
 
-class TuriParserError {
+class COMMONSHARED_EXPORT TuriParserError {
     int line;
     QString errorText;
     ERROR_TYPE errorType;

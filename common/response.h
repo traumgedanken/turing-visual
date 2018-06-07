@@ -1,8 +1,9 @@
 #pragma once
 
+#include "common_global.h"
 #include "turiprogram.h"
 
-class Response {
+class COMMONSHARED_EXPORT Response {
   public:
     int status = -1;
     TuriProgram * program = nullptr;

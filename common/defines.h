@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common_global.h"
+
 enum DIRECTION { LEFT, NONE, RIGHT };
 
 enum ERROR_TYPE { ERROR, WARNING };

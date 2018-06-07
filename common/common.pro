@@ -1,17 +1,15 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-05-08T12:30:55
+# Project created by QtCreator 2018-06-07T09:55:28
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       -= gui
 
-CONFIG += c++11
+TARGET = common
+TEMPLATE = lib
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = turi
-TEMPLATE = app
+DEFINES += COMMON_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -24,30 +22,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    htmltext.cpp \
-    edge.cpp \
-    node.cpp \
-    graphwidget.cpp \
-    client.cpp \
-    turicarriagepainter.cpp
-
+        exceptionmessage.cpp \
+        request.cpp \
+        response.cpp \
+        turicommand.cpp \
+        turiparsererror.cpp \
+        turiprogram.cpp
 
 HEADERS += \
-    mainwindow.h \
-    htmltext.h \
-    edge.h \
-    node.h \
-    graphwidget.h \
-    client.h \
-    turicarriagepainter.h
+        common_global.h \
+        defines.h \
+        exceptionmessage.h \
+        request.h \
+        response.h \
+        turicommand.h \
+        turiparsererror.h \
+        turiprogram.h
 
-FORMS += \
-        mainwindow.ui
 
-INCLUDEPATH += ../common
-LIBS += -L ../build-common-Desktop-Debug -lcommon
-
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}

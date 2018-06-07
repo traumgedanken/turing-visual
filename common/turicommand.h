@@ -1,9 +1,10 @@
 #pragma once
 
+#include "common_global.h"
 #include <QString>
 #include <defines.h>
 
-class TuriCommand {
+class COMMONSHARED_EXPORT TuriCommand {
     QString currentState;
     QString nextState;
     QChar currentSymbol;

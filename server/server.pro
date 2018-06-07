@@ -20,23 +20,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 SOURCES += main.cpp \
     server.cpp \
-    request.cpp \
-    response.cpp\
-    turicommand.cpp\
     turiparser.cpp\
-    turiparsererror.cpp\
-    turiprogram.cpp \
-    exceptionmessage.cpp \
     turicarriage.cpp
 
 HEADERS += \
     server.h \
-    request.h \
-    response.h\
-    turicommand.h\
     turiparser.h\
-    turiparsererror.h\
-    turiprogram.h \
-    defines.h \
-    exceptionmessage.h \
     turicarriage.h
+
+INCLUDEPATH += ../common
+LIBS += -L ../build-common-Desktop-Debug -lcommon

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "common_global.h"
 #include "turiprogram.h"
-#include <QString>
 
 enum FunctionName {
     FN_NONE,
@@ -16,7 +16,7 @@ enum FunctionName {
     FN_CARRIAGE_RUN
 };
 
-class Request {
+class COMMONSHARED_EXPORT Request {
   public:
     FunctionName functionName = FN_NONE;
     QString code = "";
