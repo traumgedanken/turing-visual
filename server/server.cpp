@@ -41,8 +41,16 @@ void Server::onReadyRead() {
     QTcpSocket * clientSocket = static_cast<QTcpSocket *>(sender());
     QByteArray data = clientSocket->readAll();
     cout << "Received:" << endl << data.toStdString() << endl;
+    buffer.append(QString(data));
+    int index = buffer.indexOf(NETWORK_SEPARATOR);
+    // check if buffer contains full request
+    if (index == -1) return;
+    // take full request
+    QString newRequestStr = buffer.mid(0, index);
+    // clean buffer from processed request
+    buffer = buffer.mid(index + 1);
     Request req =
-        Request::deserialize(QString::fromStdString(data.toStdString()));
+        Request::deserialize(newRequestStr);
 
     QString responseStr = fromRequest(req);
     cout << "Sending:" << endl << responseStr.toStdString() << endl;

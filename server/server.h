@@ -8,6 +8,10 @@
 class Server : public QObject {
     // to avoid ddos
     QTime lastResponse;
+
+    // to save not completed requests
+    QString buffer;
+
     QTcpServer * tcpServer;
     Q_OBJECT
     QVector<TuriCarriage *> carriages;

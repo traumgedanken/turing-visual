@@ -21,7 +21,7 @@ Client::Client(Request & req, QObject * parent, QString hostAdress, int port)
 
 void Client::onConnected() {
     QTcpSocket * clientSocket = static_cast<QTcpSocket *>(sender());
-    QString requestStr = request->serialize();
+    QString requestStr = request->serialize() + NETWORK_SEPARATOR;
     clientSocket->write(requestStr.toUtf8());
     clientSocket->flush();
 }
