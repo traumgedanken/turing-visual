@@ -11,7 +11,8 @@ using namespace std;
 
 #define RETURN_INVALID_INDEX_ERROR                                             \
     if (req.id < 0 || req.id >= carriages.length()) {                          \
-        Response res(NETWORK_ERROR_CODE, "Invalid index");                     \
+        Response res(NETWORK_FALSE, "Invalid index.\n"                         \
+                                    "Server was rebooted");                    \
         return res.serialize();                                                \
     }
 
@@ -21,14 +22,15 @@ Server::Server(QObject * parent) : QObject(parent) {
 
     int PORT = 3000;
     if (!tcpServer->listen(QHostAddress::Any, PORT)) {
-        cerr << "error listen " << endl;
+        cerr << "Error listen." << endl;
     } else {
-        cout << "started at " << PORT << endl;
+        cout << "Started at: " << PORT << endl;
     }
+    lastResponse = QTime::currentTime();
 }
 
 void Server::onNewConnection() {
-    cout << "got new connection" << endl;
+    cout << "Got new connection." << endl;
     QTcpSocket * clientSocket = tcpServer->nextPendingConnection();
     connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(clientSocket, SIGNAL(disconnected()), this,
@@ -37,14 +39,13 @@ void Server::onNewConnection() {
 
 void Server::onReadyRead() {
     QTcpSocket * clientSocket = static_cast<QTcpSocket *>(sender());
-    cout << "receiving data" << endl;
     QByteArray data = clientSocket->readAll();
     cout << "Received:" << endl << data.toStdString() << endl;
     Request req =
         Request::deserialize(QString::fromStdString(data.toStdString()));
 
     QString responseStr = fromRequest(req);
-    cout << "Sending: " << endl << responseStr.toStdString() << endl;
+    cout << "Sending:" << endl << responseStr.toStdString() << endl;
     clientSocket->write(responseStr.toUtf8());
     clientSocket->flush();
 }
@@ -64,7 +65,7 @@ QString Server::fromRequest(Request & req) {
         return result;
     }
     case FN_CARRIAGE_CREATE: {
-        if (numberOfClients() >= MAX_CLIENT_NUMBER) {
+        if (req.id == -1 && numberOfClients() >= MAX_CLIENT_NUMBER) {
             Response res(NETWORK_FALSE, "Server is overload. Wait please");
             return res.serialize();
         }
@@ -76,6 +77,7 @@ QString Server::fromRequest(Request & req) {
             return res.serialize();
         }
         if (req.id != -1) {
+            RETURN_INVALID_INDEX_ERROR
             delete carriages[req.id];
             carriages[req.id] = nullptr;
         }
@@ -89,7 +91,7 @@ QString Server::fromRequest(Request & req) {
         RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->prev();
-        Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
+        Response res(result ? NETWORK_TRUE : NETWORK_SPECIAL_STATUS,
                      carriage->getCurrentWord(), carriage->getCurrentState(),
                      carriage->getPosition(), carriage->getCurrentLine());
         return res.serialize();
@@ -98,7 +100,7 @@ QString Server::fromRequest(Request & req) {
         RETURN_INVALID_INDEX_ERROR
         TuriCarriage * carriage = carriages[req.id];
         bool result = carriage->next();
-        Response res(result ? NETWORK_TRUE : NETWORK_FALSE,
+        Response res(result ? NETWORK_TRUE : NETWORK_SPECIAL_STATUS,
                      carriage->getCurrentWord(), carriage->getCurrentState(),
                      carriage->getPosition(), carriage->getCurrentLine());
         return res.serialize();
@@ -148,7 +150,20 @@ QString Server::fromRequest(Request & req) {
     }
 }
 
-void Server::onClientDisconnected() { cout << "Client disconnected " << endl; }
+void Server::onClientDisconnected() {
+    cout << "Client disconnected." << endl;
+    wait();
+}
+
+void Server::wait() {
+    while (true) {
+        QTime now = QTime::currentTime();
+        if (lastResponse.msecsTo(now) > DELAY_TIME_MILLIS) {
+            lastResponse = now;
+            return;
+        }
+    }
+}
 
 int Server::numberOfClients() {
     int number = 0;
@@ -165,8 +180,8 @@ int Server::newClient(TuriCarriage * carriage) {
         return oldLength;
     }
     int newId = 0;
-    while(carriages[newId] != nullptr) newId++;
+    while (carriages[newId] != nullptr)
+        newId++;
     carriages[newId] = carriage;
     return newId;
-
 }

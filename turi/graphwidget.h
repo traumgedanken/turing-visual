@@ -7,6 +7,9 @@ class Node;
 
 class GraphWidget : public QGraphicsView {
     Q_OBJECT
+    int timerId;
+    Node * centerNode;
+    QVector<Node *> states;
 
   public:
     GraphWidget(QWidget * parent, TuriProgram * program);
@@ -26,9 +29,5 @@ class GraphWidget : public QGraphicsView {
     void scaleView(qreal scaleFactor);
 
   private:
-    int timerId;
-    Node * centerNode;
-    QVector<Node *> states;
-
     Node * getNode(QString stateName);
 };

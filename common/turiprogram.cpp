@@ -3,9 +3,8 @@
 TuriProgram::TuriProgram() {}
 
 TuriProgram::~TuriProgram() {
-    for (auto & command : program) {
+    for (auto & command : program)
         delete command;
-    }
 }
 
 void TuriProgram::addCommand(TuriCommand * newCommand) {
@@ -30,6 +29,7 @@ void TuriProgram::setErrorsList(QVector<TuriParserError *> & _errors) {
 QVector<TuriParserError *> TuriProgram::getErrors() { return errors; }
 
 void TuriProgram::removeCommands() {
-    for (auto & com : program) delete com;
+    for (auto & com : program)
+        delete com;
     program.clear();
 }

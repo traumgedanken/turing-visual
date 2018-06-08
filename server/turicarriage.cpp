@@ -1,11 +1,5 @@
 #include "turicarriage.h"
 
-TuriCarriage::TuriCarriage() {
-    for (int i = 0; i < 100; i++)
-        word.append(' ');
-    position = 50;
-}
-
 TuriCarriage::TuriCarriage(QString _word, TuriProgram * program) {
     for (int i = 0; i < 100; i++)
         word.append(' ');

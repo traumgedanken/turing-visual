@@ -12,8 +12,8 @@ class Client : public QObject {
   public:
     explicit Client(Request & req, QObject * parent,
                     QString hostAdress = "127.0.0.1", int port = 3000);
+
     Response getResponse();
-  signals:
 
   public slots:
     void onConnected();

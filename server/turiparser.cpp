@@ -135,7 +135,7 @@ bool TuriParser::isValidState(QString & state) {
 }
 
 bool TuriParser::isValidSymbol(const QChar symbol) {
-    return symbol.isLetterOrNumber() || symbol == ' ';
+    return symbol.isPrint() || symbol == ' ';
 }
 
 void TuriParser::validateSymbols(QString & symbols) {

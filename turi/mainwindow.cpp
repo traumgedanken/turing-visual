@@ -12,12 +12,14 @@
 #define PROCESS_FALSE_RESPONSE                                                 \
     if (res.status == NETWORK_FALSE) {                                         \
         QMessageBox::information(this, "ERROR", res.word);                     \
+        carriageIndex = -1;                                                    \
         return;                                                                \
     }
 
 #define PROCESS_ERROR_RESPONSE                                                 \
     if (res.status == NETWORK_ERROR_CODE) {                                    \
         QMessageBox::critical(this, "ERROR", res.word);                        \
+        askToSave = false;                                                     \
         close();                                                               \
     }
 
@@ -32,7 +34,8 @@
         close();                                                               \
         return;                                                                \
     }                                                                          \
-    PROCESS_ERROR_RESPONSE
+    PROCESS_ERROR_RESPONSE                                                     \
+    PROCESS_FALSE_RESPONSE
 
 #define GET_NEW_FILE_NAME                                                      \
     QFileDialog dialog(this);                                                  \
@@ -61,6 +64,9 @@ MainWindow::MainWindow(QWidget * parent)
     QString name = "Graph";
     ui->tabWidget->addTab(graph, name);
     setLineCounter();
+    QString empty("                    ");
+    QString endState("!");
+    TuriCarriagePainter::draw(ui->outputResult, empty, endState, 5);
     show();
     Request req(FN_NONE);
     TRY_GET_RESPONSE(req);
@@ -68,7 +74,7 @@ MainWindow::MainWindow(QWidget * parent)
 
 MainWindow::~MainWindow() {
     delete ui;
-    delete graph;
+    if (graph != nullptr) delete graph;
 }
 
 void MainWindow::printProgram() {
@@ -103,17 +109,22 @@ void MainWindow::on_codeEdit_textChanged() {
     printProgram();
     validateSetupBtn();
     printProgramTable();
+    updateGraph();
     if (errors.isEmpty()) {
         ui->tabWidget->setTabText(1, "Errors");
-        ui->tabWidget->removeTab(2);
-        QString name = "Graph";
-        graph = new GraphWidget(this, program);
-        ui->tabWidget->addTab(graph, name);
     } else {
         QString errorTabTitle =
             "Errors (" + QString::number(errors.length()) + ")";
         ui->tabWidget->setTabText(1, errorTabTitle);
     }
+}
+
+void MainWindow::updateGraph() {
+    ui->tabWidget->removeTab(2);
+    if (graph != nullptr) delete graph;
+    QString name = "Graph";
+    graph = new GraphWidget(this, program);
+    ui->tabWidget->addTab(graph, name);
 }
 
 void MainWindow::printErrorsList() {
@@ -124,6 +135,7 @@ void MainWindow::printErrorsList() {
 }
 
 void MainWindow::printProgramTable() {
+    itemChangedByUser = false;
     ui->tableWidget->setRowCount(program->count());
     for (int i = 0; i < program->count(); i++) {
         TuriCommand * currentCommand = program->getCommand(i);
@@ -141,6 +153,7 @@ void MainWindow::printProgramTable() {
     }
     ui->tableWidget->resizeRowsToContents();
     ui->tableWidget->resizeColumnsToContents();
+    itemChangedByUser = true;
 }
 
 void MainWindow::on_actionOpen_triggered() {
@@ -168,7 +181,6 @@ void MainWindow::on_setupBtn_clicked() {
     Request req(FN_CARRIAGE_CREATE, carriageIndex, ui->inputEdit->text(),
                 program);
     TRY_GET_RESPONSE(req)
-    PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
     markCurrentLine(res.line);
@@ -210,6 +222,7 @@ void MainWindow::on_actionSave_as_triggered() {
 }
 
 int MainWindow::onClose() {
+    if (!askToSave) return 0;
     if (fileIsSaved || ui->codeEdit->toPlainText() == originCodeText ||
         (ui->codeEdit->toPlainText().isEmpty() && fileName.isEmpty())) {
         return 0;
@@ -220,10 +233,7 @@ int MainWindow::onClose() {
         on_actionSave_triggered();
     } else
         return 0;
-    if (fileIsSaved) {
-        return 0;
-    } else
-        return 1;
+    return fileIsSaved ? 0 : 1;
 }
 
 void MainWindow::closeEvent(QCloseEvent * ev) {
@@ -310,6 +320,7 @@ void MainWindow::on_resetBtn_clicked() {
     client = new Client(req, this);
     res = client->getResponse();
     delete client;
+    PROCESS_ERROR_RESPONSE
     PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
     TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
@@ -376,4 +387,36 @@ void MainWindow::on_suckingDickPushBtn_clicked() {
     QMessageBox::information(this, "LOL",
                              "Congratulations!!\n\n"
                              "You successfuly sucked a dick....");
+}
+
+void MainWindow::on_tableWidget_itemChanged(QTableWidgetItem * item) {
+    if (!itemChangedByUser) return;
+    int row = item->row();
+    QString res;
+    item = ui->tableWidget->item(row, 0);
+    res.append(item->text());
+    item = ui->tableWidget->item(row, 1);
+    res.append("," + item->text());
+    item = ui->tableWidget->item(row, 2);
+    res.append("->" + item->text());
+    item = ui->tableWidget->item(row, 3);
+    res.append("," + item->text());
+    item = ui->tableWidget->item(row, 4);
+    res.append("," + item->text());
+    exchangeLine(row, res);
+}
+
+void MainWindow::exchangeLine(int row, QString newLine) {
+    QStringList strList = ui->codeEdit->toPlainText().split('\n');
+    if (row >= strList.length()) return;
+    QString newCode;
+    strList.removeAll("");
+    for (int i = 0; i < strList.length(); i++) {
+        if (i != row)
+            newCode.append(strList.at(i));
+        else
+            newCode.append(newLine);
+        newCode.append('\n');
+    }
+    ui->codeEdit->setText(newCode);
 }

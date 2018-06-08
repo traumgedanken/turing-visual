@@ -5,6 +5,12 @@
 class Node;
 
 class Edge : public QGraphicsItem {
+    Node *source, *dest;
+    QPointF sourcePoint;
+    QPointF destPoint;
+    qreal arrowSize;
+    QString name;
+
   public:
     Edge(Node * sourceNode, Node * destNode, QString _name);
 
@@ -18,14 +24,7 @@ class Edge : public QGraphicsItem {
 
   protected:
     QRectF boundingRect() const override;
+
     void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
                QWidget * widget) override;
-
-  private:
-    Node *source, *dest;
-
-    QPointF sourcePoint;
-    QPointF destPoint;
-    qreal arrowSize;
-    QString name;
 };

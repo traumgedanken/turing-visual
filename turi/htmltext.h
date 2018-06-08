@@ -4,9 +4,9 @@
 
 class HtmlText {
     QString text;
-    QString ERROR_COLOR = "#E9967A";
-    QString WARNING_COLOR = "#FFE4C4";
-    QString LINE_COLOR = "#32CD32";
+    const QString ERROR_COLOR = "#E9967A";
+    const QString WARNING_COLOR = "#FFE4C4";
+    const QString LINE_COLOR = "#32CD32";
 
   public:
     HtmlText(QString _text);
@@ -15,5 +15,6 @@ class HtmlText {
 
     void markErrors(QVector<TuriParserError *> & errors);
 
+    // mark line with LINE_COLOR
     void markLine(int index);
 };

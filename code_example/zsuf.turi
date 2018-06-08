@@ -1,0 +1,12 @@
+start,0->0,R,q0
+start,1->0,R,q1
+q0,0->0,R,q0
+q0,1->0,R,q1
+q1,0->1,R,q0
+q1,1->1,R,q1
+q0, ->,,end
+q1, ->,,end
+end, ->,L,moveleft
+moveleft,1->,L,moveleft
+moveleft,0->,L,moveleft
+moveleft, ->,R,!

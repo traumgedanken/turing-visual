@@ -15,6 +15,7 @@ Client::Client(Request & req, QObject * parent, QString hostAdress, int port)
     QHostAddress serverAddress(hostAdress);
     int PORT = port;
     client->connectToHost(serverAddress, PORT);
+    // check connection
     if (!client->waitForReadyRead()) throw std::exception();
 }
 

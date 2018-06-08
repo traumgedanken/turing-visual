@@ -15,6 +15,7 @@ class COMMONSHARED_EXPORT TuriCommand {
     TuriCommand(QString _currentState, QString _nextState, QChar _currentSymbol,
                 QChar _nextSymbol, DIRECTION _direction);
 
+    // to descript lines on the graph
     QString toArrowDescription();
 
     QString getCurrentState();

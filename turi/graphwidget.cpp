@@ -67,13 +67,15 @@ GraphWidget::GraphWidget(QWidget * parent, TuriProgram * program)
     setTransformationAnchor(AnchorUnderMouse);
     scale(qreal(0.8), qreal(0.8));
     setMinimumSize(400, 400);
-    setWindowTitle(tr("Elastic Nodes"));
+    setWindowTitle(tr("Graph"));
 
     if (program == nullptr) return;
     QString endStateName = "!";
     centerNode = new Node(this, endStateName);
     states.push_back(centerNode);
     scene->addItem(centerNode);
+
+    // adding nodes according to program
     for (int i = 0; i < program->count(); i++) {
         QString stateName = program->getCommand(i)->getCurrentState();
         if (getNode(stateName) == nullptr) {
@@ -83,6 +85,7 @@ GraphWidget::GraphWidget(QWidget * parent, TuriProgram * program)
         }
     }
 
+    // adding arrows according to program
     for (int i = 0; i < program->count(); i++) {
         TuriCommand * currentCommand = program->getCommand(i);
         QString currentState = currentCommand->getCurrentState();
@@ -93,6 +96,7 @@ GraphWidget::GraphWidget(QWidget * parent, TuriProgram * program)
             new Edge(start, end, currentCommand->toArrowDescription()));
     }
 
+    // calculating start position for nodes
     int n = std::sqrt(states.length());
     int step = 100 / (n + 1);
     int row = 0;
@@ -126,7 +130,6 @@ void GraphWidget::keyPressEvent(QKeyEvent * event) {
     case Qt::Key_Right: centerNode->moveBy(20, 0); break;
     case Qt::Key_Plus: zoomIn(); break;
     case Qt::Key_Minus: zoomOut(); break;
-    case Qt::Key_Space:
     default: QGraphicsView::keyPressEvent(event);
     }
 }
