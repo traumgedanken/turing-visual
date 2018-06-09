@@ -26,7 +26,6 @@ Server::Server(QObject * parent) : QObject(parent) {
     } else {
         cout << "Started at: " << PORT << endl;
     }
-    lastResponse = QTime::currentTime();
 }
 
 void Server::onNewConnection() {
@@ -158,20 +157,7 @@ QString Server::fromRequest(Request & req) {
     }
 }
 
-void Server::onClientDisconnected() {
-    cout << "Client disconnected." << endl;
-    wait();
-}
-
-void Server::wait() {
-    while (true) {
-        QTime now = QTime::currentTime();
-        if (lastResponse.msecsTo(now) > DELAY_TIME_MILLIS) {
-            lastResponse = now;
-            return;
-        }
-    }
-}
+void Server::onClientDisconnected() { cout << "Client disconnected." << endl; }
 
 int Server::numberOfClients() {
     int number = 0;
