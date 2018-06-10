@@ -81,7 +81,9 @@ class MainWindow : public QMainWindow {
     // to edit text code according to new values in table
     void on_tableWidget_itemChanged(QTableWidgetItem * item);
 
-  private:
+    void on_actionCreate_GIF_triggered();
+
+private:
     void printProgramTable();
 
     void printErrorsList();

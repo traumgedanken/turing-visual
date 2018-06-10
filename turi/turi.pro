@@ -5,7 +5,7 @@ TEMPLATE   = app
 DEFINES   += QT_DEPRECATED_WARNINGS
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-SOURCES +=                 \
+SOURCES   +=               \
     main.cpp               \
     mainwindow.cpp         \
     htmltext.cpp           \
@@ -16,7 +16,7 @@ SOURCES +=                 \
     turicarriagepainter.cpp
 
 
-HEADERS +=                 \
+HEADERS   +=               \
     mainwindow.h           \
     htmltext.h             \
     edge.h                 \
@@ -25,9 +25,10 @@ HEADERS +=                 \
     client.h               \
     turicarriagepainter.h
 
-FORMS +=                   \
+FORMS     +=               \
         mainwindow.ui
 
+include(../3rdparty/QtGifImage/src/gifimage/qtgifimage.pri)
 INCLUDEPATH += ../common
 LIBS += -L ../build-common-Desktop-Debug -lcommon
 

@@ -1,11 +1,13 @@
 #include "turicarriagepainter.h"
 #include <QPainter>
 #include <QPicture>
+#include <defines.h>
 
-void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state,
-                               int position) {
-    label->clear();
-    QPicture pi;
+QImage TuriCarriagePainter::draw(QString & word, QString & state, int position,
+                                 QLabel * label) {
+    if (label != nullptr) label->clear();
+    QImage pi(FRAME_WIDTH, FRAME_HIGHT, QImage::Format_RGB32);
+    pi.fill(QColor(239, 235, 231));
     QPainter p(&pi);
 
     p.setRenderHint(QPainter::Antialiasing);
@@ -18,9 +20,9 @@ void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state,
     p.drawRect((position - 1) * cellWidth, 0, cellWidth, cellHeigth);
 
     p.setPen(QPen(Qt::darkGray, 2));
-    p.drawLine(0, 0, carriageWidth, 0);
+    p.drawLine(1, 1, carriageWidth, 1);
     p.drawLine(0, cellHeigth, carriageWidth, cellHeigth);
-    p.drawRect((position - 1) * cellWidth, cellHeigth, cellWidth, 25);
+    p.drawRect((position - 1) * cellWidth, cellHeigth, cellWidth, 24);
     for (int i = cellWidth; i < carriageWidth; i += cellWidth) {
         p.drawLine(i, 0, i, cellHeigth);
     }
@@ -39,5 +41,8 @@ void TuriCarriagePainter::draw(QLabel * label, QString & word, QString & state,
     p.drawText((position - 1) * cellWidth, cellHeigth, cellWidth, 25,
                Qt::AlignCenter, state);
     p.end();
-    label->setPicture(pi);
+    if (label != nullptr)
+        label->setPixmap(QPixmap::fromImage(pi));
+
+    return pi;
 }

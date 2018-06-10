@@ -346,6 +346,7 @@
     <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
+    <addaction name="actionCreate_GIF"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuRun">
@@ -455,6 +456,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+R</string>
+   </property>
+  </action>
+  <action name="actionCreate_GIF">
+   <property name="text">
+    <string>Create GIF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

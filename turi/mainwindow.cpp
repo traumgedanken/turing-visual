@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "defines.h"
+#include <qgifimage.h>
 #include "htmltext.h"
 #include "turicarriagepainter.h"
 #include "ui_mainwindow.h"
@@ -40,7 +41,7 @@
 #define GET_NEW_FILE_NAME                                                      \
     QFileDialog dialog(this);                                                  \
     dialog.setAcceptMode(QFileDialog::AcceptSave);                             \
-    dialog.setDefaultSuffix("turi");                                           \
+    dialog.setDefaultSuffix("tr");                                           \
     QStringList fileNames;                                                     \
     if (dialog.exec()) {                                                       \
         fileNames = dialog.selectedFiles();                                    \
@@ -66,7 +67,7 @@ MainWindow::MainWindow(QWidget * parent)
     setLineCounter();
     QString empty("                    ");
     QString endState("!");
-    TuriCarriagePainter::draw(ui->outputResult, empty, endState, 5);
+    TuriCarriagePainter::draw(empty, endState, 5, ui->outputResult);
     show();
     Request req(FN_NONE);
     TRY_GET_RESPONSE(req);
@@ -159,7 +160,7 @@ void MainWindow::printProgramTable() {
 void MainWindow::on_actionOpen_triggered() {
     QFileDialog dialog(this);
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setNameFilter(tr("TURI files (*.turi)"));
+    dialog.setNameFilter(tr("TURI files (*.tr)"));
     QStringList fileNames;
     if (dialog.exec()) {
         fileNames = dialog.selectedFiles();
@@ -182,7 +183,7 @@ void MainWindow::on_setupBtn_clicked() {
                 program);
     TRY_GET_RESPONSE(req)
     carriageIndex = res.id;
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
+    TuriCarriagePainter::draw(res.word, res.state, 5, ui->outputResult);
     markCurrentLine(res.line);
     ui->nextBtn->setEnabled(true);
     ui->runBtn->setEnabled(true);
@@ -275,7 +276,7 @@ void MainWindow::on_nextBtn_clicked() {
     Request req(FN_CARRIAGE_NEXT, carriageIndex, "");
     TRY_GET_RESPONSE(req)
     bool succes = res.status == NETWORK_TRUE;
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+    TuriCarriagePainter::draw(res.word, res.state, res.id, ui->outputResult);
     if (!succes) {
         codeEditedByUser = false;
         ui->codeEdit->setText(ui->codeEdit->toPlainText());
@@ -292,7 +293,7 @@ void MainWindow::on_prevBtn_clicked() {
     Request req(FN_CARRIAGE_PREV, carriageIndex, "");
     TRY_GET_RESPONSE(req)
     bool succes = res.status == NETWORK_TRUE;
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+    TuriCarriagePainter::draw(res.word, res.state, res.id, ui->outputResult);
     if (!succes) {
         ui->prevBtn->setEnabled(false);
     } else {
@@ -305,7 +306,7 @@ void MainWindow::on_prevBtn_clicked() {
 void MainWindow::on_runBtn_clicked() {
     Request req(FN_CARRIAGE_RUN, carriageIndex, "");
     TRY_GET_RESPONSE(req);
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+    TuriCarriagePainter::draw(res.word, res.state, res.id, ui->outputResult);
     ui->runBtn->setEnabled(false);
     ui->nextBtn->setEnabled(false);
     ui->prevBtn->setEnabled(true);
@@ -316,6 +317,7 @@ void MainWindow::on_resetBtn_clicked() {
     Request req(FN_CARRIAGE_WORD, carriageIndex, "");
     TRY_GET_RESPONSE(req)
     QString newWord = res.word;
+    ui->inputEdit->setText(newWord);
     req = Request(FN_CARRIAGE_CREATE, carriageIndex, newWord, program);
     client = new Client(req, this);
     res = client->getResponse();
@@ -323,7 +325,7 @@ void MainWindow::on_resetBtn_clicked() {
     PROCESS_ERROR_RESPONSE
     PROCESS_FALSE_RESPONSE
     carriageIndex = res.id;
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, 5);
+    TuriCarriagePainter::draw(res.word, res.state, 5, ui->outputResult);
     markCurrentLine(res.line);
     ui->prevBtn->setEnabled(false);
     ui->nextBtn->setEnabled(true);
@@ -340,13 +342,13 @@ void MainWindow::on_resetAndRunBtn_clicked() {
 void MainWindow::on_moveLeftBtn_clicked() {
     Request req(FN_CARRIAGE_LEFT, carriageIndex, "");
     TRY_GET_RESPONSE(req)
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+    TuriCarriagePainter::draw(res.word, res.state, res.id, ui->outputResult);
 }
 
 void MainWindow::on_moveRightBtn_clicked() {
     Request req(FN_CARRIAGE_RIGHT, carriageIndex, "");
     TRY_GET_RESPONSE(req)
-    TuriCarriagePainter::draw(ui->outputResult, res.word, res.state, res.id);
+    TuriCarriagePainter::draw(res.word, res.state, res.id, ui->outputResult);
 }
 
 void MainWindow::setLineCounter() {
@@ -419,4 +421,49 @@ void MainWindow::exchangeLine(int row, QString newLine) {
         newCode.append('\n');
     }
     ui->codeEdit->setText(newCode);
+}
+
+void MainWindow::on_actionCreate_GIF_triggered() {
+    // check if possible to create gif
+    if (!ui->setupBtn->isEnabled()) {
+        QMessageBox::critical(this, "ERROR", "Unable to create GIF");
+        return;
+    }
+
+    QGifImage gif(QSize(FRAME_WIDTH, FRAME_HIGHT));
+    gif.setDefaultDelay(500);
+    QVector<QImage> frames;
+
+    // reserve a new carriage on server to get all frames
+    int tmpCarriageIndex = -1;
+    { Request req(FN_CARRIAGE_CREATE, -1, ui->inputEdit->text(),
+                program);
+    TRY_GET_RESPONSE(req)
+    tmpCarriageIndex = res.id;
+    // get the first frame
+    frames.append(TuriCarriagePainter::draw(res.word, res.state, 5)); }
+
+    // get all other frames
+    bool execute = false;
+    do {
+        Request req(FN_CARRIAGE_NEXT, tmpCarriageIndex, "");
+        TRY_GET_RESPONSE(req)
+        frames.append(TuriCarriagePainter::draw(res.word, res.state, res.id));
+        execute = res.status == NETWORK_TRUE;
+    } while(execute);
+
+    // delete reserved carriage
+    Request req(FN_CARRIAGE_DELETE, tmpCarriageIndex);
+    try {
+        client = new Client(req, this);
+        delete client;
+    } catch (std::exception) {}
+
+    for (int i = 0; i < frames.length() - 1; i++)
+            gif.addFrame(frames[i], QPoint(0, 0));
+    // add last frame with a bigger delay time
+    gif.addFrame(frames[frames.length() - 1], QPoint(0, 0), 3000);
+
+    gif.save(QFileDialog::getSaveFileName() + ".gif");
+    QMessageBox::information(this, "SUCCESS", "GIF was successfuly created!");
 }

@@ -10,6 +10,6 @@ class TuriCarriagePainter {
     static const int cellHeigth = 50;
 
   public:
-    static void draw(QLabel * label, QString & word, QString & state,
-                     int position);
+    static QImage draw(QString & word, QString & state,
+                     int position, QLabel * label = nullptr);
 };

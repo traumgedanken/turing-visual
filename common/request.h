@@ -4,7 +4,7 @@
 #include "turiprogram.h"
 
 enum FunctionName {
-    /* usually uset to check connection */
+    /* usually used to check connection */
     FN_NONE,
 
     /* parse program from code field in request */

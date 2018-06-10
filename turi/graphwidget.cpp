@@ -51,7 +51,6 @@
 #include "graphwidget.h"
 #include "edge.h"
 #include "node.h"
-#include <QDebug>
 #include <QKeyEvent>
 #include <math.h>
 
