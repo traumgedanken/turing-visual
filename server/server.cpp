@@ -47,7 +47,7 @@ void Server::onReadyRead() {
     // take full request
     QString newRequestStr = buffer.mid(0, index);
     // clean buffer from processed request
-    buffer = buffer.mid(index + 1);
+    buffer = buffer.mid(index + 4);
     Request req =
         Request::deserialize(newRequestStr);
 

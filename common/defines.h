@@ -16,7 +16,7 @@ enum {
     NETWORK_TRUE = 0
 };
 
-#define NETWORK_SEPARATOR '~'
+#define NETWORK_SEPARATOR "\r\n\r\n"
 
 // for creating gif
 enum {
